@@ -12,46 +12,37 @@ public class Runner {
 		TicTacToe t=null;
 		int size=3;
 		Scanner konsole = new Scanner(System.in);
-			try {
-				System.out.println("Bitte die Größe des Feldes eingeben:");
-				String input = konsole.nextLine();
-				size = Integer.parseInt(input);				}
-				catch (NumberFormatException ausnahme) {
-				System.out.println("Falsche Eingabe.");
-				}
-				catch (IllegalArgumentException e) {
-				System.out.print(e.getMessage());
-				}
-			if(size>=99){System.out.println("Größe "+size+" des Boards in der Implementierung möglich (siehe TicTacToe.java), aber in der Shell nicht sinnvoll darstellbar"); new Runner();}	
 		try {
+			System.out.println("Bitte die Groesse des Feldes eingeben:");
+			String input = konsole.nextLine();
+			size = Integer.parseInt(input);
+			if(size<1){
+				System.out.println("Zahl groesser 0 fuer die Groesse des Feldes eingeben!");
+				new Runner();
+			}
+			}
+			catch (NumberFormatException ausnahme) {
+			System.out.println("Falsche Eingabe. Boardgroesse wurde auf 3x3 gesetzt");
+			}
+			catch (IllegalArgumentException e) {
+			System.out.print(e.getMessage());
+			}
 			t = new TicTacToe(size);
-		} catch (IllegalArgumentException e) {
-			System.out.println("Enter board size as argument!");
-			System.exit(-1);
-		}
 		System.out.println(t.toString());
+		System.out.println("Zum vorzeitigen Beenden \"end\" +Enter eingeben");
 		System.out.println(t.print());
 		while(t.fertig()<0){
 			try {
 				System.out.println("Bitte Spieler [x/o] und Position [1..."+size+"] [1..."+size+"] mit Leerzeichen getrennt eingeben");
 				String input = konsole.nextLine();
-				int l,x,y;//l für die max. Länge der Eingabe, zB "x 13 14"
-				if(size<10){
-					l = 5; x = Integer.parseInt(input.substring(2,3));
-					y = Integer.parseInt(input.substring(4));
-				}
-				else{
-					try {
-						x = Integer.parseInt(input.substring(2,4));
-						y = Integer.parseInt(input.substring(5));
-					} catch (NumberFormatException e) {
-						x = Integer.parseInt(input.substring(2,3));
-						y = Integer.parseInt(input.substring(4));
-					}
-				}
-				
-				t.setze(input.charAt(0), x, y);
+				if(input.equalsIgnoreCase("end")){System.out.println("Bis zum naechsten Mal!");System.exit(-1);}
+				int x,y;
+				String[] split = input.split(" ");
+				t.setze(input.charAt(0), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
 				System.out.println(t.gameStatus());
+			}
+			catch(ArrayIndexOutOfBoundsException e){
+				System.out.println("Falsche Eingabe: [x/o] [1..."+size+"] [1..."+size+"]");
 			}
 			catch (StringIndexOutOfBoundsException e) {
 				System.out.println("Falsche Eingabe: [x/o] [1..."+size+"] [1..."+size+"]");
@@ -64,7 +55,8 @@ public class Runner {
 				System.out.println("Nochmal spielen? [_/n]");
 				String input = konsole.nextLine();
 				if(input.equalsIgnoreCase("n")){
-					konsole.close();
+					System.out.println("Bis zum naechsten Mal! \n (c) T.H. 2012");
+					System.exit(-1);
 				}
 				else{
 					new Runner();
@@ -73,7 +65,5 @@ public class Runner {
 				catch (NumberFormatException ausnahme) {
 				System.out.println("Falsche Eingabe.");
 				}
-			konsole.close();
-			System.out.println("(c) T.H. 2012");
 	}	
 }
