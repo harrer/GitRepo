@@ -36,7 +36,7 @@ public class TicTacToe extends basicpackage.BasicBoard implements Game{
 			System.out.println("Spieler "+s+" nicht vorhanden, entweder 'x' oder 'o'");
 			return -1;
 		}
-		int[][] temp = getBoard();//Durch Seiteneffekte uebertragen sich Aenderungen in temp auf BasicBoard.Board
+		int[][] temp = getBoard();//Durch Seiteneffekte übertragen sich Änderungen in temp auf BasicBoard.Board
 		if(x<0||y<0||x>=temp.length||y>=temp.length){//Falls auf eine nicht vorhandene Zelle zugegriffen wird
 			System.out.println("Zelle nicht vorhanden");
 			return -1;
@@ -71,7 +71,7 @@ public class TicTacToe extends basicpackage.BasicBoard implements Game{
 	
 	public int fertig(){//-1 == noch nicht fertig | 0 == unentschieden | 1/2 Spieler x/o hat gewonnen
 		int[][] b = getBoard();
-		int Zx=0, Zo=0;//Zaehlen die Kreuze(x)/Kreise(o) in den Zeilen bzw. Spalten
+		int Zx=0, Zo=0;//Zählen die Kreuze(x)/Kreise(o) in den Zeilen bzw. Spalten
 		for (int i = 0; i < b.length; i++) {//horizontal
 			if(Zx==board.length||Zo==board.length){
 				break;
@@ -118,7 +118,7 @@ public class TicTacToe extends basicpackage.BasicBoard implements Game{
 		if(Zo==board.length){
 			return 2;
 		}
-		Zx=0; Zo=0;//setzt die Zaehler wieder auf 0
+		Zx=0; Zo=0;//setzt die Zähler wieder auf 0
 		for (int i = 0; i < b.length; i++) {//vertikal
 			if(Zx==board.length||Zo==board.length){
 				break;
