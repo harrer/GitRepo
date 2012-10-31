@@ -27,10 +27,18 @@ public class Zuhoerer implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		if(gui.controller.model.getBoard()[pos.y][pos.x]==0){
 			gui.controller.setze(gui.controller.model.getNextPlayer(), pos.y+1, pos.x+1);
-		jb.get(counter).setText(""+gui.controller.model.getLastplayer());
+			jb.get(counter).setText(""+gui.controller.model.getLastplayer());
+			gui.setTitle("Noch nicht entschieden.");
 		}
 		if(gui.controller.getFertig()){
-			JOptionPane.showMessageDialog(gui, "Spieler "+gui.controller.model.getLastplayer()+" hat gewonnen.\n Nochmal?");
+			if(gui.controller.model.fertig()>0){
+				gui.setTitle("Spieler "+gui.controller.model.getLastplayer()+" hat gewonnen.");
+				JOptionPane.showMessageDialog(gui, "Spieler "+gui.controller.model.getLastplayer()+" hat gewonnen.\n Nochmal?");
+			}
+			else{
+				gui.setTitle("Unentschieden.");
+				JOptionPane.showMessageDialog(gui,"Unentschieden");
+			}
 			gui.setVisible(false);
 			new Runner();
 		}
