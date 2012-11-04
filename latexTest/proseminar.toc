@@ -1,0 +1,8 @@
+\beamer@endinputifotherversion {3.10pt}
+\beamer@sectionintoc {1}{Suffix Arrays}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Grundlagen}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Suffix Arrays aus Suffix Trees}{5}{0}{1}
+\beamer@subsectionintoc {1}{3}{Anwendung von Suffix Arrays}{6}{0}{1}
+\beamer@subsectionintoc {1}{4}{Backward Search}{12}{0}{1}
+\beamer@subsectionintoc {1}{5}{Forward Searching}{19}{0}{1}
+\beamer@sectionintoc {2}{Burrows-Wheeler Transformation}{23}{0}{2}

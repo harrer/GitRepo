@@ -1,0 +1,339 @@
+\documentclass{beamer}
+%\usetheme{Warsaw}
+\usepackage{color}
+
+\title{Suffix Arrays und BWT}
+\author{Tobias Harrer}
+\date{19.11.12}
+ 
+\begin{document}
+\maketitle
+\frame{\tableofcontents[currentsection]}
+ 
+\section{Suffix Arrays}
+\subsection{Grundlagen}
+\begin{frame} %%Eine Folie
+  \frametitle{Suffix Arrays} %%Folientitel
+  \begin{Definition} %%Definition
+    Sei T ein String der L\"ange n \"uber $\Sigma$ und $T_{i,j} (i\leq j)$ der Substring von i bis j, dann ist $T_{i,n}$ ein Suffix von T. Das Suffix Array von T ist die Permutation der Startindizes i der alphabetischen geordneten Suffixes $T_{i,n}$ von T.
+  \end{Definition}
+  Anmerkung: jeder String T endet mit \$ \newline
+  $\forall c \in \Sigma : \$ < c$
+\end{frame}
+\begin{frame}
+\frametitle{Beispiel} %%Folientitel
+T = "abacabra\$"\newline
+	\begin{tabular}{l r}
+	i $T_{i,n}$ & alphabetisch geordnet\\
+1 abacabra\$ & \$ 9\\
+2 bacabra\$ & a\$ 8\\
+3 acabra\$ & abacabra\$ 1\\
+4 cabra\$ & abra\$ 5\\
+5 abra\$ & acabra\$ 3\\
+6 bra\$ & bacabra\$ 2\\
+7 ra\$ & bra\$ 6\\
+8 a\$ & cabra\$ 4\\
+9 \$ & ra\$ 7\\
+	\end{tabular}
+	\newline
+	Das Suffix Array von T lautet: \newline
+	1 2 3 4 5 6 7 8 9 $\rightarrow$ i\newline
+9 8 1 5 3 2 6 4 7 $\rightarrow$ S(i)
+\end{frame}
+\subsection{Suffix Arrays aus Suffix Trees}
+\begin{frame}
+\frametitle{Suffix Arrays aus Suffix Trees} %%Folientitel
+\begin{itemize}
+\item Sortierung durch z.B. mergeSort in ${ \scriptstyle \mathcal{O	}}(n*log n)$
+\item Ein Suffix Array kann aus des Bl\"attern eines Suffix Trees durch Tiefensuche hergeleitet werden: T = "abacabra\$"\newline
+\end{itemize}
+\includegraphics[scale=0.2]{SuffixTree.jpg}
+\end{frame}
+\subsection{Anwendung von Suffix Arrays}
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{itemize}
+\item Finde Pattern p ("cab") in String T ("abacabra")
+\item Naiver Ansatz: "schiebe" p \"uber T: \newline
+abacabra \newline
+cab$\rightarrow$ \newline
+...\newline
+abacabra \newline
+. . cab
+\item Problem: ${ \scriptstyle \mathcal{O	}}(n*m)$
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{itemize}
+\item Vorteil: alle Suffixes lexikografisch sortiert
+\item p "cab" ist Prefix $T_{1,i}$ des Suffix $T_{4,n}$: \newline
+\begin{tabular}{l}
+	i $T_{i,n}$\\
+9 \$\\
+8 a\$\\
+1 abacabra\$\\
+5 abra\$\\
+3 acabra\$\\
+2 bacabra\$\\
+6 bra\$\\
+4 \color{red}\textbf{cab}\color{black}ra\$\\
+7 ra\$\\
+	\end{tabular}
+\item Beste Suchstrategie in sortiertem Array?
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{itemize}
+\item Bin\"are Suche, Vergleich von "cab" mit $T{i,i+3}$:\newline
+\begin{tabular}{l}
+	i $T_{i,n}$\\
+9 \$\\
+8 a\$\\
+1 abacabra\$\\
+5 abra\$\\
+3 \color{red}\textbf{aca}\color{black}bra\$\ "cab" $>$ "aca" $\rightarrow$ zweite H\"alfte\\
+2 bacabra\$\\
+6 bra\$\\
+4 cabra\$\\
+7 ra\$\\
+	\end{tabular}
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{tabular}{l}
+	i $T_{i,n}$\\
+3 acabra\$\\
+2 bacabra\$\\
+6 \color{red}\textbf{bra}\color{black}\$ "cab" $>$ "bra" $\rightarrow$ zweite H\"alfte\\
+4 cabra\$\\
+7 ra\$\\
+	\end{tabular}
+\end{frame}
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{itemize}
+\item
+\begin{tabular}{l}
+	i $T_{i,n}$\\
+6 bra\$\\
+4 \color{red}\textbf{cab}\color{black}ra\$ "cab" $=$ "cab" $\rightarrow$ Pattern ist $T_{4,4+3}$\\
+7 ra\$\\
+	\end{tabular}\newline
+\item Anschliessend Suche nach weiteren Vorkommen von p.
+\item Suche in ${ \scriptstyle \mathcal{O	}}(log n)$
+	\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Zusammenfassung: Bin\"are Suche in Suffix Arrays}
+\begin{itemize}
+\item Finden der n Suffixes in T: ${ \scriptstyle \mathcal{O	}}(n)$
+\item Alphabetisch Sortieren des Suffix Arrays: ${ \scriptstyle \mathcal{O	}}(n*log n)$
+\item Bin\"are Suche eines Patterns in T: ${ \scriptstyle \mathcal{O	}}(log n)$
+\item Insgesamt ${ \scriptstyle \mathcal{O	}}(n log n)$ (oder m log n?)
+\end{itemize}
+\end{frame}
+\subsection{Backward Search}
+\begin{frame}
+\frametitle{Backward Search}
+\begin{itemize}
+\item Grundlage: Suffix Array
+\item Neu: keine bin\"are Suche, finden von zB "b" mit Array C["b"] = 5
+\item Vorheriger Buchstabe $T_{A[i]-1}$ des Suffix $T_{A[i],n}$
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Bsp.: Suche von p = "abra"}
+T = "abacabra\$" \newline
+\begin{tabular}{l c cc r}
+i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+1 & 9 & a & \$ \\
+2 & 8 & r & a\$ \\
+3 & 1 & \$ & abacabra\$ \\
+4 & 5 & c & abra\$ \\
+5 & 3 & b & acabra\$ \\
+6 & 2 & a & bacabra\$ \\
+7 & 6 & a & bra\$ \\
+8 & 4 & a & cabra\$ \\
+9 & 7 & b & ra\$ \\
+\end{tabular}
+\begin{itemize}
+\item "abr\color{red}\textbf{a}\color{black}" von hinten: alle "a", von C["a"]+1 bis C["b"]
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Bsp.: Suche von p = "abra" (Schritt 1)}
+\begin{itemize}
+\item Darunter alle "a" mit Vorg\"anger "r"
+\begin{tabular}{l c cc r}
+i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+\textbf{2} & \textbf{8} & \color{red}\textbf{r} & \textbf{a\$} \\
+3 & 1 & \$ & abacabra\$ \\
+4 & 5 & c & abra\$ \\
+5 & 3 & b & acabra\$ \\
+\end{tabular}
+\item Weiter zu i = C["r"]+1 = 9
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Bsp.: Suche von p = "abra" (Schritt 2)}
+\begin{itemize}
+\item Suche "a\color{red}\textbf{b}\color{black}ra" in r mit Vorg\"anger b
+\begin{tabular}{l c cc r}
+i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+. & . & . & .\\
+5 & 3 & b & acabra\$ \\
+. & . & . & .\\
+\textbf{9} & \textbf{7} & \color{red}\textbf{b} & \textbf{ra\$} \\
+\end{tabular}
+\item b ist bei i = 5 bereits \textit{einmal} in $T_{A[i]-1}$ vorgekommen $\rightarrow$ suche von C["b"]+1\textit{+1} bis C["c"], d.h. bei i = 7
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Bsp.: Suche von p = "abra" (Schritt 3)}
+\begin{itemize}
+\item Finde alle "\color{red}\textbf{a}\color{black}bra" in b mit Vorg\"anger "a":
+\begin{tabular}{l c cc r}
+i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+1 & 9 & a & \$ \\
+. & . & . & .\\
+6 & 2 & a & bacabra\$ \\
+\textbf{7} & \textbf{6}  & \color{red}\textbf{a} & \textbf{bra\$} \\
+\end{tabular}
+\item Da bei i = 1 und 6 a bereits \textit{zweimal} in $T_{A[i]-1}$ vorkam $\rightarrow$ suche von C["a"]+1\textit{+2} bis C["b"], d.h. bei i = 4
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Bsp.: Suche von p = "abra" (Schritt 4)}
+\begin{tabular}{l c cc r}
+i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+4 & 5 & c & \color{red}\textbf{abra\$} \\
+\end{tabular}
+\begin{itemize}
+\item Nach 4 Schritten (= L\"ange m von p) ist das Pattern gefunden $\rightarrow { \scriptstyle \mathcal{O	}}(m)$
+\item Problem: z.B. "wie oft ist "b" in Spalte $T_{A[i]-1}$ vor i = 5" erfordert lineares Durchsuchen von $T_{A[i]-1}$ $\rightarrow { \scriptstyle \mathcal{O	}}(m*n)$.
+\item Effizientes Vorgehen n\"otig, sonst Laufzeit wie bei naiver Suche!
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{L\"osung: Funktion Occ(c,i)}
+\begin{itemize}
+\item Die Spalte des Vorg\"anger-Buchstaben $T_{A[i]-1}$ nennen wir ab jetzt $L_{1,n}$
+\item F\"ur alle c aus $\Sigma$ sei $B^{c}$ ein Bit-Vektor mit $B^{c}[i] = 1$ falls $L_{i} = c$
+\item Eine weitere Funktion $rank_{b}(B,i)$ liefert die Anzahl von zB b=1 in B vor i, s.d $rank_{1}(B^{c},i) = Occ(c,i)$.
+\item Dies ben\"otigt linear mehr Speicher, doch der Zugriff durch rank ist konstant, s.d. ${ \scriptstyle \mathcal{O	}}(m)$ insgesamt garantiert ist.
+\item Wavelet Trees?
+\end{itemize}
+\end{frame}
+\begin{frame}
+\subsection{Forward Searching}
+\frametitle{Forward Searching}
+\begin{itemize}
+\item Vorherige Position: $LF(i) = C[L_i] + Occ(L_i,i)$
+\item W\"ahrend beim Backward Searching ein Suffix auf das vorhergehende abgebildet wird, ist es hier umgekehrt
+\item Inverse Funktion $\Psi(i) = i'$, s.d. A[i'] = (A[i] mod n)+1 bildet die Pos. eines Suffix auf die seines Nachfolgers ab
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Bsp.: $\Psi$ zu T = "abacabra\$"}
+\begin{tabular}{l c cc ccc r}
+i & $A[i]$ & $\Psi$ & newF & $T_{A[i],n}$ \\
+1 & 9 & 3 & 1 &\$\\
+2 & 8 & 1 & 1&a\$\\
+3 & 1 & 6 & 0&abacabra\$\\
+4 & 5 & 7 & 0&abra\$\\
+5 & 3 & 8 & 0&acabra\$\\
+6 & 2 & 5 & 1&bacabra\$\\
+7 & 6 & 9 & 0&bra\$\\
+8 & 4 & 4 & 1&cabra\$\\
+9 & 7 & 2 & 1&ra\$\\
+\end{tabular}
+\end{frame}
+\begin{frame}
+\frametitle{Suche von p in T}
+\begin{itemize}
+\item Falls $\forall c: c \in \Sigma \Rightarrow c \in T$ ex. $\sigma$ aufsteigende Zahlenfolgen in $\Psi$: 3; 1,6,7,8; 5,9; 4; 2;
+\item Diese zeigen an, wo sich der erste Buchstabe des Suffix \"andert. Als Bitvektor newF = 110001011
+\item Die Suche von p erfolgt bin\"ar, wobei p ein Prefix des jew. Suffix ist, welches durch rekursives Folgen von $\Psi(i)$ \textit{ohne das Suffix Array} gefunden werden kann
+\item Der jew. erste Buchstabe $T_{A[i]}$ des Suffixes $T_{A[i],n}$ wird durch $rank(newF,i)$ ermittelt. Falls zB $rank(newF,i) = 2$ ist c = "a".
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Fazit Forward Searching}
+\begin{itemize}
+\item $\Psi$ ersetzt A[i].
+\item Weder A[i] noch T sind zur Suche von p in T n\"otig
+\item $\Psi$ kann durch \textit{gap-encoding} weiter komprimiert werden.
+\end{itemize}
+\end{frame}
+\section{Burrows-Wheeler Transformation}
+\begin{frame}
+\frametitle{Burrows-Wheeler Transformation}
+\begin{itemize}
+\item Die BWT ist eine Permutation von T, s.d. an jeder Stelle des Suffix Arrays der vorherige Buchstabe angeh\"angt wird:
+\end{itemize}
+\begin{Definition}
+Sei $T_{1,n}$ ein String und A[1,n] sein Suffix Array. Dann ist die BWT $T_{1,n}^{bwt}$ von T: \newline $T_{i}^{bwt} = T_{A[i]-1}$ $\forall 1 \leq i \leq n$ ausser A[i] = 1 $\Rightarrow$ $T_{i}^{bwt} = T_n = \$ $
+\end{Definition}
+\end{frame}
+\begin{frame}
+\frametitle{Anschauliches Beispiel, T = "abacabra\$"}
+\begin{tabular}{l c r}
+Permutationen & alph. geordnet & $F...L = T^{bwt}$ \\
+abacabra\$ & \$abacabra & \$...a \\
+bacabra\$a & a\$abacabr & a...r \\
+acabra\$ab & abacabra\$ & a...\$ \\
+cabra\$aba & abra\$abac & a...c \\
+abra\$abac & acabra\$ab & a...b \\
+bra\$abaca & bacabra\$a & b...a \\
+ra\$abacab & bra\$abaca & b...a \\
+a\$abacabr & cabra\$aba & c...a \\
+\$abacabra & ra\$abacab & r...b \\
+\end{tabular}
+\begin{itemize}
+\item $T^{bwt}$ = ar\$cbaaab
+\item BWT Permutation besser f\"ur weitere Komprimierung von T als T selbst
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{BWT R\"ucktransformation}
+\begin{itemize}
+\item Da $L_i$ $F_i$ voransteht, kann T aus $T^{bwt}$ wie folgt wiederhergestellt werden:
+\end{itemize}
+\begin{tabular}{l c cc r}
+F...L & nach links &sortiert& L links angeh\"angt\\
+\$...a &...a\$ &...\$a&...a\$a\\
+a...r &...ra &...a\$&...ra\$\\
+a...\$ &...\$a &...ab&...\$ab\\
+a...c &...ca &...ab&...cab\\
+a...b &...ba &...ac&...bac\\
+b...a &...ab &...ba&...aba\\
+b...a &...ab &...br&...abr\\
+c...a &...ac &...ca&...aca\\
+r...b &...br &...ra&...bra\\
+\end{tabular}
+\begin{itemize}
+\item Reihe L = $T^{bwt}$ bekannt, F wird aus L alph. sortiert
+\item Verschieben "nach links", sortieren
+\item L = $T^{bwt}$ links "anh\"angen, sortieren...
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{BWT R\"ucktransformation}
+Nach n Durchg\"angen ist die Matrix wiederhergestellt:\newline
+\begin{tabular}{l}
+\$abacabra \\
+a\$abacabr \\
+\color{red}\textit{abacabra}\$ \\
+abra\$abac \\
+acabra\$ab \\
+bacabra\$a \\
+bra\$abaca \\
+cabra\$aba \\
+ra\$abacab \\
+\end{tabular}
+\newline T ist derjenige String, der mit "\$" endet.
+\end{frame}
+\end{document}
