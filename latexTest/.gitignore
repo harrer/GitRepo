@@ -9,3 +9,4 @@
 *.tex.kate-swp
 *.synctex.gz
 *.tex~
+*.tex.backup
