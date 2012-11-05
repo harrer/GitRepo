@@ -12,6 +12,7 @@
 \usepackage{textcomp}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{array}
 
 \title{Suffix Arrays und BWT}
 \author{Tobias Harrer}
@@ -33,24 +34,26 @@
   $\forall c \in \Sigma : \$ < c$
 \end{frame}
 \begin{frame}
-\frametitle{Beispiel} %%Folientitel
-T = \glqq abacabra\$\grqq\newline
-	\begin{tabular}{l r}
-	i $T_{i,n}$ & alphabetisch geordnet\\
-1 abacabra\$ & \$ 9\\
-2 bacabra\$ & a\$ 8\\
-3 acabra\$ & abacabra\$ 1\\
-4 cabra\$ & abra\$ 5\\
-5 abra\$ & acabra\$ 3\\
-6 bra\$ & bacabra\$ 2\\
-7 ra\$ & bra\$ 6\\
-8 a\$ & cabra\$ 4\\
-9 \$ & ra\$ 7\\
-	\end{tabular}
-	\newline
-	Das Suffix Array von T lautet: \newline
-	1 2 3 4 5 6 7 8 9 \textrightarrow i\newline
-9 8 1 5 3 2 6 4 7 \textrightarrow S(i)
+\frametitle{Suffix Arrays - Beispiel} %%Folientitel
+T = \glqq abacabra\$\grqq\\[5mm]
+
+\begin{tabular}{r|l<{\ttfamily} r<{\ttfamily}}
+\textbf{i $T_{i,n}$} & \textbf{alphabetisch geordnet}\\\hline
+1 & abacabra\$ & \$ 9\\
+2 & bacabra\$ & a\$ 8\\
+3 & acabra\$ & abacabra\$ 1\\
+4 & cabra\$ & abra\$ 5\\
+5 & abra\$ & acabra\$ 3\\
+6 & bra\$ & bacabra\$ 2\\
+7 & ra\$ & bra\$ 6\\
+8 & a\$ & cabra\$ 4\\
+9 & \$ & ra\$ 7\\
+\end{tabular}\\[5mm]
+Das Suffix Array von T lautet: \newline
+{\ttfamily
+\qquad 1 2 3 4 5 6 7 8 9 \textrightarrow\ \textbf{i}\newline
+\qquad 9 8 1 5 3 2 6 4 7 \textrightarrow\ \textbf{S(i)}
+}
 \end{frame}
 %%%%
 \subsection{Suffix Arrays aus Suffix Trees}
@@ -68,7 +71,7 @@ T = \glqq abacabra\$\grqq\newline
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
 \item Finde Pattern p (\glqq cab\grqq) in String T (\glqq abacabra\grqq)
-\item Naiver Ansatz: \glqq schiebe\grqq p über T: \newline
+\item Naiver Ansatz: \glqq schiebe\grqq\ p über T: \newline
 {\ttfamily
 abacabra \newline
 cab\textrightarrow \newline
@@ -83,7 +86,7 @@ abacabra \newline
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
 \item Vorteil: alle Suffixes lexikografisch sortiert
-\item p \glqq cab\grqq ist Prefix $T_{1,i}$ des Suffix $T_{4,n}$: \newline
+\item p \glqq cab\grqq ist Präfix $T_{1,i}$ des Suffix $T_{4,n}$: \newline
 \begin{tabular}{l}
 	i $T_{i,n}$\\
 9 \$\\
