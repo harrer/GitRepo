@@ -69,11 +69,13 @@ T = \glqq abacabra\$\grqq\newline
 \begin{itemize}
 \item Finde Pattern p (\glqq cab\grqq) in String T (\glqq abacabra\grqq)
 \item Naiver Ansatz: \glqq schiebe\grqq p über T: \newline
+{\ttfamily
 abacabra \newline
 cab\textrightarrow \newline
 ...\newline
 abacabra \newline
 . . cab
+}
 \item Problem: $\mathcal{O}(n\cdot m)$
 \end{itemize}
 \end{frame}
@@ -159,9 +161,10 @@ abacabra \newline
 \item Vorheriger Buchstabe $T_{A[i]-1}$ des Suffix $T_{A[i],n}$
 \end{itemize}
 \end{frame}
+
 \begin{frame}
-\frametitle{Bsp.: Suche von p = abra}
-T = abacabra\$ \newline
+\frametitle{Bsp.: Suche von p = \glqq abra\grqq }
+T = \glqq abacabra\$\grqq \newline
 \begin{tabular}{l c cc r}
 i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 1 & 9 & a & \$ \\
@@ -175,7 +178,7 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 9 & 7 & b & ra\$ \\
 \end{tabular}
 \begin{itemize}
-\item \glqq abr\color{red}\textbf{a}\color{black}\grqq von hinten: alle \textt{a}, von C[\glqq a\grqq]+1 bis C[\glqq b\grqq]
+\item \glqq abr{\color{red}\textbf{a}}\grqq von hinten: alle \texttt{a}, von C[\glqq a\grqq ]+1 bis C[\glqq b\grqq ]
 \end{itemize}
 \end{frame}
 \begin{frame}
