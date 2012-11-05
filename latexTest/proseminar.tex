@@ -1,4 +1,5 @@
-\documentclass{beamer}
+
+  \documentclass{beamer}
 %\usetheme{Warsaw}
 \usepackage{color}
 
@@ -44,7 +45,7 @@ T = "abacabra\$"\newline
 \begin{frame}
 \frametitle{Suffix Arrays aus Suffix Trees} %%Folientitel
 \begin{itemize}
-\item Sortierung durch z.B. mergeSort in ${ \scriptstyle \mathcal{O	}}(n*log n)$
+\item Sortierung durch z.B. mergeSort in $\mathcal{O}(n*log (n))$
 \item Ein Suffix Array kann aus des Bl\"attern eines Suffix Trees durch Tiefensuche hergeleitet werden: T = "abacabra\$"\newline
 \end{itemize}
 \includegraphics[scale=0.2]{SuffixTree.jpg}
@@ -60,7 +61,7 @@ cab$\rightarrow$ \newline
 ...\newline
 abacabra \newline
 . . cab
-\item Problem: ${ \scriptstyle \mathcal{O	}}(n*m)$
+\item Problem: $\mathcal{O}(n*m)$
 \end{itemize}
 \end{frame}
 \begin{frame}
@@ -123,7 +124,7 @@ abacabra \newline
 7 ra\$\\
 	\end{tabular}\newline
 \item Anschliessend Suche nach weiteren Vorkommen von p.
-\item Suche in ${ \scriptstyle \mathcal{O	}}(log n)$
+\item Suche in $\mathcal{O}(log (n))$
 	\end{itemize}
 \end{frame}
 \begin{frame}
@@ -132,7 +133,7 @@ abacabra \newline
 \item Finden der n Suffixes in T: ${ \scriptstyle \mathcal{O	}}(n)$
 \item Alphabetisch Sortieren des Suffix Arrays: ${ \scriptstyle \mathcal{O	}}(n*log n)$
 \item Bin\"are Suche eines Patterns in T: ${ \scriptstyle \mathcal{O	}}(log n)$
-\item Insgesamt ${ \scriptstyle \mathcal{O	}}(n log n)$ (oder m log n?)
+\item Insgesamt $\mathcal{O}(n log n)$ (oder m log n?)
 \end{itemize}
 \end{frame}
 \subsection{Backward Search}
@@ -212,7 +213,7 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 4 & 5 & c & \color{red}\textbf{abra\$} \\
 \end{tabular}
 \begin{itemize}
-\item Nach 4 Schritten (= L\"ange m von p) ist das Pattern gefunden $\rightarrow { \scriptstyle \mathcal{O	}}(m)$
+\item Nach 4 Schritten (= L\"ange m von p) ist das Pattern gefunden $\rightarrow \mathcal{O}(m)$
 \item Problem: z.B. "wie oft ist "b" in Spalte $T_{A[i]-1}$ vor i = 5" erfordert lineares Durchsuchen von $T_{A[i]-1}$ $\rightarrow { \scriptstyle \mathcal{O	}}(m*n)$.
 \item Effizientes Vorgehen n\"otig, sonst Laufzeit wie bei naiver Suche!
 \end{itemize}
@@ -223,7 +224,7 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 \item Die Spalte des Vorg\"anger-Buchstaben $T_{A[i]-1}$ nennen wir ab jetzt $L_{1,n}$
 \item F\"ur alle c aus $\Sigma$ sei $B^{c}$ ein Bit-Vektor mit $B^{c}[i] = 1$ falls $L_{i} = c$
 \item Eine weitere Funktion $rank_{b}(B,i)$ liefert die Anzahl von zB b=1 in B vor i, s.d $rank_{1}(B^{c},i) = Occ(c,i)$.
-\item Dies ben\"otigt linear mehr Speicher, doch der Zugriff durch rank ist konstant, s.d. ${ \scriptstyle \mathcal{O	}}(m)$ insgesamt garantiert ist.
+\item Dies ben\"otigt linear mehr Speicher, doch der Zugriff durch rank ist konstant, s.d. $\mathcal{O}(m)$ insgesamt garantiert ist.
 \item Wavelet Trees?
 \end{itemize}
 \end{frame}
@@ -336,4 +337,9 @@ ra\$abacab \\
 \end{tabular}
 \newline T ist derjenige String, der mit "\$" endet.
 \end{frame}
+% Zusammenfassung
+\begin{frame}
+ \frametitle{Zusammenfassung}
+\end{frame}
+
 \end{document}
