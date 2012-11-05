@@ -82,68 +82,70 @@ abacabra \newline
 \item Problem: $\mathcal{O}(n\cdot m)$
 \end{itemize}
 \end{frame}
+%
 \begin{frame}
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
 \item Vorteil: alle Suffixes lexikografisch sortiert
 \item p \glqq cab\grqq ist Präfix $T_{1,i}$ des Suffix $T_{4,n}$: \newline
-\begin{tabular}{l}
-	i $T_{i,n}$\\
-9 \$\\
-8 a\$\\
-1 abacabra\$\\
-5 abra\$\\
-3 acabra\$\\
-2 bacabra\$\\
-6 bra\$\\
-4 \color{red}\textbf{cab}\color{black}ra\$\\
-7 ra\$\\
-	\end{tabular}
+\begin{tabular}{r|l<{\ttfamily}}
+\textbf{i} & \textbf{$T_{i,n}$}\\\hline
+9 & \$\\
+8 & a\$\\
+1 & abacabra\$\\
+5 & abra\$\\
+3 & acabra\$\\
+2 & bacabra\$\\
+6 & bra\$\\
+4 & {\color{red}\textbf{cab}}ra\$\\
+7 & ra\$\\
+\end{tabular}
 \item Beste Suchstrategie in sortiertem Array?
 \end{itemize}
 \end{frame}
+%
 \begin{frame}
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
 \item Binäre Suche, Vergleich von \glqq cab\grqq mit $T{i,i+3}$:\newline
-\begin{tabular}{l}
-	i $T_{i,n}$\\
-9 \$\\
-8 a\$\\
-1 abacabra\$\\
-5 abra\$\\
-3 \color{red}\textbf{aca}\color{black}bra\$\ \glqq cab\grqq $>$ \glqq aca\grqq \textrightarrow zweite Hälfte\\
-2 bacabra\$\\
-6 bra\$\\
-4 cabra\$\\
-7 ra\$\\
-	\end{tabular}
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{i} & $T_{i,n}$\\\hline
+9 & \$\\
+8 & a\$\\
+1 & abacabra\$\\
+5 & abra\$\\
+3 & \color{red}\textbf{aca}\color{black}bra\$\ \glqq cab\grqq $>$ \glqq aca\grqq \textrightarrow zweite Hälfte\\
+2 & bacabra\$\\
+6 & bra\$\\
+4 & cabra\$\\
+7 & ra\$\\
+\end{tabular}
 \end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Anwendung von Suffix Arrays}
-\begin{tabular}{l}
-	i $T_{i,n}$\\
-3 acabra\$\\
-2 bacabra\$\\
-6 \color{red}\textbf{bra}\color{black}\$ \glqq cab\grqq $>$ \glqq bra\grqq \textrightarrow zweite Hälfte\\
-4 cabra\$\\
-7 ra\$\\
-	\end{tabular}
+\begin{tabular}{r|l<{\ttfamily}}
+\textbf{i} & $T_{i,n}$\\\hline
+3 & acabra\$\\
+2 & bacabra\$\\
+6 & {\color{red}\textbf{bra}}\$ \glqq cab\grqq $>$ \glqq bra\grqq \textrightarrow zweite Hälfte\\
+4 & cabra\$\\
+7 & ra\$\\
+\end{tabular}
 \end{frame}
 \begin{frame}
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
 \item
-\begin{tabular}{l}
-	i $T_{i,n}$\\
-6 bra\$\\
-4 \color{red}\textbf{cab}\color{black}ra\$ \glqq cab\grqq  $=$ \glqq cab\grqq  \textrightarrow Pattern ist $T_{4,4+3}$\\
-7 ra\$\\
-	\end{tabular}\newline
+\begin{tabular}{r|l<{\ttfamily}}
+\textbf{i} & $T_{i,n}$\\\hline
+6 & bra\$\\
+4 & {\color{red}\textbf{cab}}ra\$ \glqq cab\grqq  $=$ \glqq cab\grqq  \textrightarrow Pattern ist $T_{4,4+3}$\\
+7 & ra\$\\
+\end{tabular}\newline
 \item Anschliessend Suche nach weiteren Vorkommen von p.
 \item Suche in $\mathcal{O}(log (n))$
-	\end{itemize}
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Zusammenfassung: Binäre Suche in Suffix Arrays}
@@ -167,9 +169,9 @@ abacabra \newline
 
 \begin{frame}
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq }
-T = \glqq abacabra\$\grqq \newline
-\begin{tabular}{l c cc r}
-i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+T = \glqq abacabra\$\grqq\\[5mm]
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} l<{\ttfamily}}
+\textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
 1 & 9 & a & \$ \\
 2 & 8 & r & a\$ \\
 3 & 1 & \$ & abacabra\$ \\
@@ -179,7 +181,7 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 7 & 6 & a & bra\$ \\
 8 & 4 & a & cabra\$ \\
 9 & 7 & b & ra\$ \\
-\end{tabular}
+\end{tabular}\\[5mm]
 \begin{itemize}
 \item \glqq abr{\color{red}\textbf{a}}\grqq von hinten: alle \texttt{a}, von C[\glqq a\grqq ]+1 bis C[\glqq b\grqq ]
 \end{itemize}
@@ -187,14 +189,14 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 \begin{frame}
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq (Schritt 1)}
 \begin{itemize}
-\item Darunter alle \glqq a\grqq mit Vorgänger \glqq r\grqq
-\begin{tabular}{l c cc r}
-i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+\item Darunter alle \glqq a\grqq mit Vorgänger \glqq r\grqq\\[5mm]
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} l<{\ttfamily}}
+i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
 \textbf{2} & \textbf{8} & \color{red}\textbf{r} & \textbf{a\$} \\
 3 & 1 & \$ & abacabra\$ \\
 4 & 5 & c & abra\$ \\
 5 & 3 & b & acabra\$ \\
-\end{tabular}
+\end{tabular}\\[5mm]
 \item Weiter zu i = C[\glqq r\grqq]+1 = 9
 \end{itemize}
 \end{frame}
@@ -202,8 +204,8 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq (Schritt 2)}
 \begin{itemize}
 \item Suche \glqq a\color{red}\textbf{b}\color{black}ra\grqq in r mit Vorgänger b
-\begin{tabular}{l c cc r}
-i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+\textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
 . & . & . & .\\
 5 & 3 & b & acabra\$ \\
 . & . & . & .\\
@@ -215,23 +217,23 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 \begin{frame}
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq (Schritt 3)}
 \begin{itemize}
-\item Finde alle \glqq{\color{red}\textbf{a}}bra\grqq  in b mit Vorgänger \glqq a\grqq:
-\begin{tabular}{l c cc r}
-i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+\item Finde alle \glqq{\color{red}\textbf{a}}bra\grqq  in b mit Vorgänger \glqq a\grqq:\\[5mm]
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+\textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
 1 & 9 & a & \$ \\
 . & . & . & .\\
 6 & 2 & a & bacabra\$ \\
 \textbf{7} & \textbf{6}  & \color{red}\textbf{a} & \textbf{bra\$} \\
-\end{tabular}
+\end{tabular}\\[5mm]
 \item Da bei i = 1 und 6 a bereits \textit{zweimal} in $T_{A[i]-1}$ vorkam \textrightarrow suche von C[\glqq a\grqq]+1\textit{+2} bis C[\glqq b\grqq], d.h. bei i = 4
 \end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq  (Schritt 4)}
-\begin{tabular}{l c cc r}
-i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+\textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
 4 & 5 & c & \color{red}\textbf{abra\$} \\
-\end{tabular}
+\end{tabular}\\[5mm]
 \begin{itemize}
 \item Nach 4 Schritten (= Länge m von p) ist das Pattern gefunden $\rightarrow \mathcal{O}(m)$
 \item Problem: z.B. \textit{wie oft ist \glqq b\grqq  in Spalte $T_{A[i]-1}$ vor i = 5} erfordert lineares Durchsuchen von $T_{A[i]-1}\ \rightarrow\ \mathcal{O}(m\cdot n)$.
@@ -259,17 +261,17 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\
 \end{frame}
 \begin{frame}
 \frametitle{Bsp.: $\Psi$ zu T = \glqq abacabra\$\grqq}
-\begin{tabular}{l c cc ccc r}
-i & $A[i]$ & $\Psi$ & newF & $T_{A[i],n}$ \\
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} c<{\ttfamily}c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+i & $A[i]$ & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
 1 & 9 & 3 & 1 &\$\\
-2 & 8 & 1 & 1&a\$\\
-3 & 1 & 6 & 0&abacabra\$\\
-4 & 5 & 7 & 0&abra\$\\
-5 & 3 & 8 & 0&acabra\$\\
-6 & 2 & 5 & 1&bacabra\$\\
-7 & 6 & 9 & 0&bra\$\\
-8 & 4 & 4 & 1&cabra\$\\
-9 & 7 & 2 & 1&ra\$\\
+2 & 8 & 1 & 1 &a\$\\
+3 & 1 & 6 & 0 &abacabra\$\\
+4 & 5 & 7 & 0 &abra\$\\
+5 & 3 & 8 & 0 &acabra\$\\
+6 & 2 & 5 & 1 &bacabra\$\\
+7 & 6 & 9 & 0 &bra\$\\
+8 & 4 & 4 & 1 &cabra\$\\
+9 & 7 & 2 & 1 &ra\$\\
 \end{tabular}
 \end{frame}
 \begin{frame}
@@ -301,8 +303,8 @@ Sei $T_{1,n}$ ein String und A[1,n] sein Suffix Array. Dann ist die BWT $T_{1,n}
 \end{frame}
 \begin{frame}
 \frametitle{Anschauliches Beispiel, T = \glqq abacabra\$\grqq}
-\begin{tabular}{l c r}
-Permutationen & alph. geordnet & $F...L = T^{bwt}$ \\
+\begin{tabular}{l<{\ttfamily} c<{\ttfamily} r<{\ttfamily}}
+\textbf{Permutationen} & \textbf{alph. geordnet} & $F\ldots L = T^{bwt}$ \\\hline
 abacabra\$ & \$abacabra & \$...a \\
 bacabra\$a & a\$abacabr & a...r \\
 acabra\$ab & abacabra\$ & a...\$ \\
@@ -312,7 +314,7 @@ bra\$abaca & bacabra\$a & b...a \\
 ra\$abacab & bra\$abaca & b...a \\
 a\$abacabr & cabra\$aba & c...a \\
 \$abacabra & ra\$abacab & r...b \\
-\end{tabular}
+\end{tabular}\\[5mm]
 \begin{itemize}
 \item $T^{bwt}$ = ar\$cbaaab
 \item BWT Permutation besser für weitere Komprimierung von T als T selbst
@@ -323,8 +325,8 @@ a\$abacabr & cabra\$aba & c...a \\
 \begin{itemize}
 \item Da $L_i$ $F_i$ voransteht, kann T aus $T^{bwt}$ wie folgt wiederhergestellt werden:
 \end{itemize}
-\begin{tabular}{l c cc r}
-F...L & nach links &sortiert& L links angehängt\\
+\begin{tabular}{l<{\ttfamily} c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+F...L & nach links &sortiert& L links angehängt\\\hline
 \$...a &...a\$ &...\$a&...a\$a\\
 a...r &...ra &...a\$&...ra\$\\
 a...\$ &...\$a &...ab&...\$ab\\
@@ -343,8 +345,8 @@ r...b &...br &...ra&...bra\\
 \end{frame}
 \begin{frame}
 \frametitle{BWT Rücktransformation}
-Nach n Durchgängen ist die Matrix wiederhergestellt:\newline
-\begin{tabular}{l}
+Nach n Durchgängen ist die Matrix wiederhergestellt:\\[5mm]
+\begin{tabular}{l<{\ttfamily}}
 \$abacabra \\
 a\$abacabr \\
 \color{red}\textit{abacabra}\$ \\
@@ -354,8 +356,8 @@ bacabra\$a \\
 bra\$abaca \\
 cabra\$aba \\
 ra\$abacab \\
-\end{tabular}
-\newline T ist derjenige String, der mit \glqq\$\grqq endet.
+\end{tabular}\\[5mm]
+T ist derjenige String, der mit \glqq\$\grqq endet.
 \end{frame}
 % Zusammenfassung
 \begin{frame}
