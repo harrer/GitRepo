@@ -26,7 +26,7 @@ public class Runner extends Thread implements Player{
 			gui.setTitle("Othello - Schwarz beginnt!");
 		}
 		else{
-			gui.setTitle("Othello - Wei√ü beginnt!");
+			gui.setTitle("Othello - Weiﬂ beginnt!");
 		}
 		init(order, t, rnd);
 		for (int i = 0; i < 64; i++) {
@@ -61,14 +61,14 @@ public class Runner extends Thread implements Player{
 			beende(1);
 		}
 		else if(board.getBoard()[pos.y][pos.x]==1){
-			if(board.keinZugM√∂glich(1)){
-				gui.setTitle("Othello - Schwarz passt. Spieler Wei√ü ist an der Reihe! S: "+board.getBlack()+" W: "+board.getWhite()+" Zum passen auf eigenes Feld klicken.");
+			if(board.keinZugMˆglich(1)){
+				gui.setTitle("Othello - Schwarz passt. Spieler Weiﬂ ist an der Reihe! S: "+board.getBlack()+" W: "+board.getWhite()+" Zum passen auf eigenes Feld klicken.");
 				currentTime = new Date().getTime();
 				setzeKI(nextMove(pos, new Date().getTime()-currentTime, 8000));
 				gui.update(board.getBoard());
 			}
 			else{
-				gui.setTitle("Kann nicht passen, es sind Z√ºge f√ºr Schwarz m√∂glich!");
+				gui.setTitle("Kann nicht passen, es sind Z¸ge f¸r Schwarz mˆglich!");
 			}
 		}
 		else if(board.setze(pos, 1)){
@@ -76,7 +76,7 @@ public class Runner extends Thread implements Player{
 			currentTime = new Date().getTime();
 			gui.update(board.getBoard());
 			if(board.istFertig()==-1){
-				gui.setTitle("Othello - Spieler Wei√ü ist an der Reihe! S: "+board.getBlack()+" W: "+board.getWhite()+" Zum passen auf eigenes Feld klicken.");
+				gui.setTitle("Othello - Spieler Weiﬂ ist an der Reihe! S: "+board.getBlack()+" W: "+board.getWhite()+" Zum passen auf eigenes Feld klicken.");
 				setzeKI(nextMove(pos, new Date().getTime()-currentTime, 8000));
 				gui.update(board.getBoard());
 			}
@@ -96,14 +96,14 @@ public class Runner extends Thread implements Player{
 				gui.setTitle("Schwarz gewinnt! "+board.getBlack()+":"+board.getWhite());
 			}
 			else{
-				gui.setTitle("Wei√ü gewinnt! "+board.getWhite()+":"+board.getBlack());
+				gui.setTitle("Weiﬂ gewinnt! "+board.getWhite()+":"+board.getBlack());
 			}
 		}
 		else if(player==1){
-			gui.setTitle("Zeit von Schwarz ist um, Wei√ü gewinnt!");
+			gui.setTitle("Zeit von Schwarz ist um, Weiﬂ gewinnt!");
 		}
 		else if(player==2){
-			gui.setTitle("Zeit von Wei√ü ist um, Schwarz gewinnt!");
+			gui.setTitle("Zeit von Weiﬂ ist um, Schwarz gewinnt!");
 		}
 		for (int i = 0; i < 64; i++) {
 			gui.getButtons().get(i).removeActionListener(gui.getButtons().get(i).getActionListeners()[0]);
@@ -130,7 +130,7 @@ public class Runner extends Thread implements Player{
 
 	@Override
 	public Move nextMove(Move prevMove, long tOpponent, long t) {
-		return ki.findeBestenZug(ki.m√∂glicheZ√ºge());
+		return ki.findeBestenZug(ki.mˆglicheZ¸ge());
 	}
 	
 }

@@ -1,9 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Random;
-
-import controller.Player;
 import controller.Runner;
 
 public class Board{
@@ -48,19 +45,19 @@ public class Board{
 			return directionList;
 		}
 		
-		if(prÃ¼fAutomat(true, player, otherPlayer, move, 1,-1)){directionList.add(new Move(1,-1));}// /^
-		if(prÃ¼fAutomat(true, player, otherPlayer, move, 1, 0)){directionList.add(new Move(1, 0));}// ->
-		if(prÃ¼fAutomat(true, player, otherPlayer, move, 1, 1)){directionList.add(new Move(1, 1));}// \v
-		if(prÃ¼fAutomat(true, player, otherPlayer, move, 0, 1)){directionList.add(new Move(0, 1));}// |v
-		if(prÃ¼fAutomat(true, player, otherPlayer, move, -1,1)){directionList.add(new Move(-1,1));}// v/
-		if(prÃ¼fAutomat(true, player, otherPlayer, move, -1,0)){directionList.add(new Move(-1,0));}// <-
-		if(prÃ¼fAutomat(true, player, otherPlayer, move,-1,-1)){directionList.add(new Move(-1,-1));}// ^\
-		if(prÃ¼fAutomat(true, player, otherPlayer, move, 0,-1)){directionList.add(new Move(0, -1));}// |^
+		if(prüfAutomat(true, player, otherPlayer, move, 1,-1)){directionList.add(new Move(1,-1));}// /^
+		if(prüfAutomat(true, player, otherPlayer, move, 1, 0)){directionList.add(new Move(1, 0));}// ->
+		if(prüfAutomat(true, player, otherPlayer, move, 1, 1)){directionList.add(new Move(1, 1));}// \v
+		if(prüfAutomat(true, player, otherPlayer, move, 0, 1)){directionList.add(new Move(0, 1));}// |v
+		if(prüfAutomat(true, player, otherPlayer, move, -1,1)){directionList.add(new Move(-1,1));}// v/
+		if(prüfAutomat(true, player, otherPlayer, move, -1,0)){directionList.add(new Move(-1,0));}// <-
+		if(prüfAutomat(true, player, otherPlayer, move,-1,-1)){directionList.add(new Move(-1,-1));}// ^\
+		if(prüfAutomat(true, player, otherPlayer, move, 0,-1)){directionList.add(new Move(0, -1));}// |^
 		
 		return directionList;
 	}
 	
-	public boolean prÃ¼fAutomat(boolean first, int s1, int s2, Move lastPos, int nachRechts, int nachUnten){
+	public boolean prüfAutomat(boolean first, int s1, int s2, Move lastPos, int nachRechts, int nachUnten){
 		Move nextMove = new Move(lastPos.x+nachRechts, lastPos.y+nachUnten);
 		if(nextMove.x<0||nextMove.y<0||nextMove.x>=size||nextMove.y>=size){
 			return false;
@@ -69,7 +66,7 @@ public class Board{
 			return false;
 		}
 		if(board[nextMove.y][nextMove.x]==s2){
-			return prÃ¼fAutomat(false, s1, s2, nextMove, nachRechts, nachUnten);
+			return prüfAutomat(false, s1, s2, nextMove, nachRechts, nachUnten);
 		}
 		if(board[nextMove.y][nextMove.x]==s1){
 			if(first){
@@ -78,7 +75,7 @@ public class Board{
 			return true;
 		}
 		else{
-			return prÃ¼fAutomat(false, s1, s2, nextMove, nachRechts, nachUnten);
+			return prüfAutomat(false, s1, s2, nextMove, nachRechts, nachUnten);
 		}
 	}
 	
@@ -99,13 +96,17 @@ public class Board{
 		}
 	}
 	
-	public boolean keinZugMÃ¶glich(int player){
+	public boolean keinZugMöglich(int player){
 		int length = 0;
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				length+=korrekterZug(new Move(j, i), player).size();
+				if(board[i][j]==0){
+					length+=korrekterZug(new Move(j, i), player).size();
+					if(korrekterZug(new Move(j, i), player).size()>0){System.out.println(j+", "+i);}
+				}
 			}
 		}
+		System.out.println();
 		if(length==0){
 			return true;
 		}
