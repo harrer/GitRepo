@@ -1,0 +1,67 @@
+\documentclass[12pt,twoside]{article}
+
+\usepackage{a4wide}            % A4 verwenden (und ausnutzen)
+\usepackage[ngerman]{babel}   % Deutsche Silbentrennung, Sonderzeichen, etc
+\usepackage[utf8x]{inputenc}  % Im TeX-File Umlaute erlauben ä statt "a
+\usepackage[T1]{fontenc}       % Umlaute f"ur Silbentrennung kodieren
+\usepackage{ae}                % Type-1 Font verwenden
+\usepackage{graphicx}          % Einbinden von PS-Graphiken
+\usepackage{pstricks,pst-node} % Eigene Zeichnungen erlauben
+\usepackage{fancyhdr}          % Kopfzeilen
+\usepackage{url}               % URL
+
+\pagestyle{fancyplain}
+%\headheight\baselineskip
+%\topmargin-0.75cm
+%\textheight47\baselineskip
+\def\MakeUppercase#1{#1}
+\makeatletter
+\lhead[\fancyplain{}{\thepage}]
+      {\fancyplain{}{\slshape Suffix Arrays und Burrows-Wheeler Transformation}} % <--- Titel eintragen
+\rhead[\fancyplain{}{\slshape Tobias Harrer}]    % <--- Name eintragen
+      {\fancyplain{}{\thepage}}
+\cfoot[]{}
+\makeatother
+\begin{document}
+\author{Tobias Harrer}
+\title{Ausarbeitung: Suffix Arrays und Burrows-Wheeler Transformation}
+\date{19.11.2012}
+\maketitle
+Proseminar, Algorithmen der Bioinformatik
+\tableofcontents	% Inhaltsverzeichnis
+\newpage
+\section{Einleitung und Definitionen}
+\subsection{Einleitung}
+Die Ausarbeitung zum Thema „Suffix Arrays und Burrows-Wheeler Transformation“ soll einen Überblick über die im Vortrag behandelten Algorithmen zur Suche eines Patterns in Strings mithilfe von Suffix Arrays geben und eine weitere Methode zur Berechnung der BWT mithilfe von Suffix Arrays zeigen.
+\subsection{Definitionen}
+\begin{itemize}
+\item Es seien T ein String der Länge n und p ein Muster der Länge m über dem Alphabet $\Sigma$.
+\item $T_{i,j}$ mit $0<i\leq j\leq n$ heißt \textit{Substring} von T, der T von Position i bis einschließlich j repräsentiert.
+\item Der Substring $T_{i,n}$ reicht bis zum einschließlich letzten Zeichen von T und heißt \textit{Suffix}.
+\item Ein \textit{Suffix Array} ist die Permutation [1, ..., n] der Startindizes i aller, lexikografisch sortierten, Suffixes von T. A[i] ist dann der i-te Eintrag des Suffix Arrays.
+\item Zusätzlich soll jeder String mit dem Zeichen $"\$"$ enden, wobei für alle $c \in \Sigma$ gilt: \$ < c.
+\end{itemize}
+
+\section{Motivation}
+Die Vorzüge von Suffix Trees gegenüber der naiven Suchmethode von Pattern in Strings, aber auch gegenüber des Boyer-Moore Algorithmus wurden im vorletzten Vortrag bereits dargestellt.
+Betrachten wir einen Suffix Tree von T, dessen Kindknoten durch die Kantenbeschriftungen von links nach rechts lexikografisch geordnet sind. Dann entspricht die Ordnung der Blätter von links nach rechts dem Suffix Array A von T [NM07, Abschnitt 3.3]. Da, wie im Folgenden gezeigt, mithilfe von lediglich A (und T) die Suche eines Patterns in T erfolgen kann, erübrigt sich das Abspeichern der gesamten Baumstruktur. Da ein Suffix Array in linearer Zeit erstellt werden kann [NM07, Abschnitt 3.3], ist es nicht praktikabel, dieses aus einem Suffix Tree herzuleiten, da dieser einen relativ großen Speicherplatzbedarf beansprucht. Im Folgenden werden nun Methoden erläutert, wie mit dem String T und dem Suffix Array A, und sogar nur mit A als Selbst-Index von T, ein Pattern p in T gefunden werden kann.
+
+\section{Effiziente Suche von Pattern in Strings mit Suffix Arrays}
+\subsection{Binäre Suche auf dem Suffix Array und Longest Common Prefix}
+Jedes Pattern p ist, sofern es in T liegt, ein Substring von T, und damit ein Präfix eines Suffixes von T. Da mit T und seinem Suffix Array A alle Suffixes \textit{lexikografisch geordnet} vorliegen und davon jeweils ein Präfix zum Vergleich herangezogen wird, bietet sich die binäre Suche auf A an. Im besten Fall ist das längste gemeinsame Präfix aller Suffixe der leere String, und p hat die Länge 1, dann läuft die binäre Suche von p in $\mathcal{O}(log (n))$ Zeit ab. Nehmen wir aber den ungünstigen Fall T =  "bbbbbb", p = "bb", so benötigt die Suche aller Vorkommen von p in T $\mathcal{O}(m\cdot k + m\cdot log(n))$ Zeit, da jeder lexikografische Vergleich $\mathcal{O}(m)$ und das Auffinden der im Suffix Array angrenzenden k Vorkommen von p $\mathcal{O}(m\cdot k)$ Zeit benötigt. Dieser Fall ist vor allem in der Bioinformatik keine Seltenheit, da sich sich das Alphabet bei DNA Sequenzen auf $\Sigma = {A,T,G,C}$ beschränkt, n sehr groß sein kann und sich Substrings, also Präfixe von Suffixen, sehr oft wiederholen können. Falls zB alle Vorkommen von Startkodons in einem Genom gesucht werden, erwartet man zumindest bei Gleichverteilung der Nukleobasen $(\frac{1}{4})^{3}\cdot n \in \mathcal{O}(n)$ Vorkommen. Daher ist es hilfreich, die Reichweite des LCP im Suffix Array zu speichern. *******************************
+
+\subsection{Backward Search}
+Da im Normalfall die Patternlänge m erheblich kleiner ist als die Textlänge n, wäre es wünschenswert, eine Suche mit Zeitaufwand propartional zur Länge des Patterns, also in $\mathcal{O}(m)$ durchzuführen. Diese Laufzeit kann mit Suffix Arrays in der sogenannten \textit{Backward Search} erreicht werden. Ausgehend von Suffix Array A betrachtet man an jeder Stelle A[i] den dem jeweiligen Suffix vorangehenden Buchstaben $T_{A[i]-1}$. Um ein Pattern p = "bcd'' zu suchen, beginnt man nicht vorne bei "b", sondern bei am Ende von p bei "d". Um diejenigen Suffixes, die mit "d'' beginnen effizient finden zu können, ist es hilfreich, ein zusätzliches Array C der Größe von $\vert \Sigma \vert$ zu betrachten, wobei zB C["d"] besagt, wieviele Buchstaben in T lexikografisch kleiner sind als "d", d.h. wieviele Suffixe mit Anfangsbuchstaben kleiner als "d'' im Suffix Array "vor'' allen mit "d'' beginnenden Suffixen stehen. Hat man den Bereich der Suffixes, die mit ''d'' beginnen, gefunden, stellt sich die Frage, wie in diesem Intervall des Suffix Arrays alle Positionen gefunden werden können, sodass der vorhergehende Buchstabe, also $T_{A[i]-1}$ = "c'' ist. Die Antwort ist eine weitere Hilfsfunktion \textit{Occ(c,i)}, die besagt, wie oft "c'' in $T_{A[i]-1}$ für alle i' < i vorkommt. \textit{Occ(c,i)} lässt sich berechnen, indem für alle $c \in \Sigma$ ein Boolsches Array B erstellt wird, wobei $B^{c}[i] = true \Leftrightarrow T_{A[i]-1} = c$. Eine Funktion, die in konstanter Zeit die Anzahl von $B^{c}[i] = true$ für alle i' < i findet, entspricht der Funktion \textit{Occ(c,i)}, die genau wie C[c] in $\mathcal{O}(1)$ eine Zahl zurückgibt. So kann das Intervall [x,y] aller mit "b'' beginnenden Suffixes mit zweitem Buchstaben "c'' folgendermaßen berechnet werden: x = C["b''] + \textit{Occ("b'',i)} und y = C["b''] + \textit{Occ("b'',i')}, wobei i die Position ist, an der alle Suffixes mit "c'' beginnen und "d'' als zweiten Buchstaben haben, und i' die Position ist, an der alle Suffixes mit "c'' beginnen und an zweiter Stelle einen Buchstaben lexikografisch größer als "d'' haben. Da eine Suche in maximal m Schritten beendet ist und jeder Suchschritt in konstanter Zeit erfolgt ist die Laufzeit in jedem Fall höchstens linear und proportional zur Länge m des Patterns. Die Frage ist, ob im Extremfall T = ''aaaaaa'', p = ''aa'', wenn also p annähernd n-mal in T vorkommt, nicht eine Laufzeit von $\mathcal{O}(m \cdot n)$ resultiert. Allerdings liefert die Backward Search in jedem Suchschritt ein Intervall [x,y] zurück, das, sofern $\vert x-y \vert > 0$, einen weiteren Suchschritt nach sich zieht. Da aber nach maximal m Schritten p in T gefunden worden ist, und in dem Fall auch nur ein Intervall [x',y'] zurückgegeben wird, ist die absolute Häufigkeit von p in T $\vert x'-y' \vert > 0$, was ebenfalls in konstanter Zeit berechenbar ist. Somit ist die Laufzeit der Backward Search von $\mathcal{O}(m)$ garantiert. [NM07, Abschnitt 4.1]. Um den Speicherbedarf der Funktion \textit{Occ("b'',i')} noch zu verringern, können auch sogenannte \textit{Wavelet Trees} verwendet werden, wobei die Suchzeit leicht auf $\mathcal{O}(m \cdot \vert \Sigma \vert)$ ansteigt [NM07, Abschnitt 4.2]. Nichtsdestotrotz unterbietet die Backward Suche ohne Wavelet Trees die Suchzeit von Suffix Trees $\mathcal{O}(m+k)$ [ucf], insbesondere wenn das Vorkommen k eines Patterns in T sehr groß ist, d.h. $\frac{k}{n} \rightarrow 1$.
+
+\subsection{Forward Searching}
+Ein weiterer Ansatz zur Suche eines Patterns p ist die Forward Suche. Sie besitzt zwar mit $\mathcal{O}(m\cdot log(n))$ eine weitaus schlechtere Laufzeit als die Backward Suche, dabei kann aber ein beliebiges p in T \textit{ohne den Zugriff auf T selbst} gefunden werden. Das Suffix Array und eine weitere Permutation $\Psi$ stellen einen \textit{Self Index} von T dar. Während bei der Backward Suche das Intervall [x,y] gesucht war, in dem sich die Suffixes $T_{A[i]-1,n}$ für ein gegebenes Suffix $T_{A[i],n}$ und den vorhergehenden Buchstaben $T_{A[i]-1}$ befinden, nimmt die Forward Suche die entgegengesetzte Richtung. Es wird zusätzlich zum Suffix Array Eintrag A[i] dasjenige $i' = \Psi(i)$ gespeichert, sodass $T_{A[i]} + T_{A[i'],n} = T_{A[i]} + T_{(A[i] mod n)+1,n} = T_{A[i],n}$. Bisher stellt das jedoch lediglich eine Umkehrung zur Backward Suche dar, wie also könnte man auf T verzichten? Nimmt man der Einfachheit halber an, dass alle $c \in \Sigma$ in T vorkommen, so beschreibt ein Boolsches Array B der Länge $n = \vert T \vert$ mit B[i] = true, dass sich an Stelle i ein neuer Buchstabe an erster Stelle des jeweiligen Suffixes befindet. Eine weitere Funktion die Anzahl a von true in B vor Position i bestimmt, weiß man, dass der erste Buchstabe des betrachteten Suffixes der lexikografisch a-te Buchstabe in $\Sigma$ sein muss, da ja alle $c \in \Sigma$ in T vorkommen sollen. Des Weiteren liefert $\Psi(i)$ die Position des Suffixes $T_{A[i'],n} = T_{(A[i] mod n)+1,n}$. So kann ein Pattern sukzessive in m Schritten konkateniert werden. Da die Grundlage wieder eine binäre Suche ist, liegt der Zeitbedarf bei $\mathcal{O}(m\cdot log(n))$.
+
+\section{Suffix Arrays in der BWT}
+
+\section{Quellen:}
+\begin{itemize}
+\item NM07: Gonzalo Navarro, Veli Mäkinen: Compressed Full-Text Indexes
+\item ucf: \url{http://www.cs.ucf.edu/~shzhang/Combio12/lec3.pdf} Folie 51, Stand 11.11.12
+\end{itemize}
+
+\end{document}

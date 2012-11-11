@@ -1,0 +1,12 @@
+*.log
+*.nav
+*.dvi
+*.aux
+*.snm
+*.toc
+*.pdf
+*.out
+*.tex.kate-swp
+*.synctex.gz
+*.tex~
+*.tex.backup
