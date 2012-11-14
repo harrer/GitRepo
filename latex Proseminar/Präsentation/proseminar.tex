@@ -28,17 +28,19 @@
 \begin{frame} %%Eine Folie
   \frametitle{Suffix Arrays} %%Folientitel
   \begin{Definition} %%Definition
-    Sei T ein String der Länge n über $\Sigma$ und $T_{i,j} (i\leq j)$ der Substring von i bis j, dann ist $T_{i,n}$ ein Suffix von T. Das Suffix Array von T ist die Permutation der Startindizes i der alphabetischen geordneten Suffixes $T_{i,n}$ von T.
+  \begin{itemize}
+  \item Sei T ein String der Länge n über $\Sigma$ und $T_{i,j}$ mit $(0<i\leq j\leq n)$ der Substring von i bis einschließlich j, dann ist $T_{i,n}$ ein Suffix von T.
+  \item Das Suffix Array von T ist die Permutation der Startindizes i der lexikografisch geordneten Suffixes $T_{i,n}$ von T.
+  \item Anmerkung: jeder String T endet mit \$, s.d für alle $c \in \Sigma$ gilt $\$ < c$ 
+  \end{itemize}
   \end{Definition}
-  Anmerkung: jeder String T endet mit \$ \newline
-  $\forall c \in \Sigma : \$ < c$
 \end{frame}
 \begin{frame}
 \frametitle{Suffix Arrays - Beispiel} %%Folientitel
 T = \glqq abacabra\$\grqq\\[5mm]
 
 \begin{tabular}{r|l<{\ttfamily} r<{\ttfamily}}
-\textbf{i $T_{i,n}$} & \textbf{alphabetisch geordnet}\\\hline
+\textbf{i $T_{i,n}$} & \textbf{lexikografisch geordnet}\\\hline
 1 & abacabra\$ & \$ 9\\
 2 & bacabra\$ & a\$ 8\\
 3 & acabra\$ & abacabra\$ 1\\
@@ -63,7 +65,7 @@ Das Suffix Array von T lautet: \newline
 \item Sortierung durch z.B. mergeSort in $\mathcal{O}(n\cdot log (n))$
 \item Ein Suffix Array kann aus des Blättern eines Suffix Trees durch Tiefensuche hergeleitet werden: T = \glqq abacabra\$\grqq\newline
 \end{itemize}
-\includegraphics[height=0.5\textheight]{SuffixTree.jpg}
+\includegraphics[scale=0.28]{SuffixTree.jpg}%[height=0.5\textheight]
 \end{frame}
 %%%%
 \subsection{Anwendung von Suffix Arrays}
@@ -87,34 +89,34 @@ abacabra \newline
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
 \item Vorteil: alle Suffixes lexikografisch sortiert
-\item p \glqq cab\grqq ist Präfix $T_{1,i}$ des Suffix $T_{4,n}$: \newline
+\item p \glqq abr\grqq ist Präfix $T_{1,3}$ des Suffix $T_{5,n}$: \newline
 \begin{tabular}{r|l<{\ttfamily}}
-\textbf{i} & \textbf{$T_{i,n}$}\\\hline
+\textbf{A[i]} & \textbf{$T_{A[i],n}$}\\\hline
 9 & \$\\
 8 & a\$\\
 1 & abacabra\$\\
-5 & abra\$\\
+5 & {\color{red}\textbf{abr}}a\$\\
 3 & acabra\$\\
 2 & bacabra\$\\
 6 & bra\$\\
-4 & {\color{red}\textbf{cab}}ra\$\\
+4 & cabra\$\\
 7 & ra\$\\
 \end{tabular}
 \item Beste Suchstrategie in sortiertem Array?
 \end{itemize}
 \end{frame}
-%
+%%%%%%%%%%%%Beginn erster Bsp. Suche von "abr"		%%%%%%%%%%%
 \begin{frame}
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
-\item Binäre Suche, Vergleich von \glqq cab\grqq mit $T{i,i+3}$:\newline
+\item Binäre Suche, Vergleich von \glqq abr\grqq mit $T{A[i],A[i]+2}$:\newline
 \begin{tabular}{l|l<{\ttfamily}}
-\textbf{i} & $T_{i,n}$\\\hline
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
 9 & \$\\
 8 & a\$\\
 1 & abacabra\$\\
 5 & abra\$\\
-3 & \color{red}\textbf{aca}\color{black}bra\$\ \glqq cab\grqq $>$ \glqq aca\grqq \textrightarrow zweite Hälfte\\
+3 & \color{red}\textbf{aca}\color{black}bra\$\ \glqq abr\grqq $<$ \color{red}\glqq aca\grqq \color{black}\textrightarrow obere Hälfte\\
 2 & bacabra\$\\
 6 & bra\$\\
 4 & cabra\$\\
@@ -122,36 +124,148 @@ abacabra \newline
 \end{tabular}
 \end{itemize}
 \end{frame}
-\begin{frame}
-\frametitle{Anwendung von Suffix Arrays}
-\begin{tabular}{r|l<{\ttfamily}}
-\textbf{i} & $T_{i,n}$\\\hline
-3 & acabra\$\\
-2 & bacabra\$\\
-6 & {\color{red}\textbf{bra}}\$ \glqq cab\grqq $>$ \glqq bra\grqq \textrightarrow zweite Hälfte\\
-4 & cabra\$\\
-7 & ra\$\\
-\end{tabular}
-\end{frame}
+
 \begin{frame}
 \frametitle{Anwendung von Suffix Arrays}
 \begin{itemize}
-\item
-\begin{tabular}{r|l<{\ttfamily}}
-\textbf{i} & $T_{i,n}$\\\hline
-6 & bra\$\\
-4 & {\color{red}\textbf{cab}}ra\$ \glqq cab\grqq  $=$ \glqq cab\grqq  \textrightarrow Pattern ist $T_{4,4+3}$\\
-7 & ra\$\\
-\end{tabular}\newline
-\item Anschliessend Suche nach weiteren Vorkommen von p.
-\item Suche in $\mathcal{O}(log (n))$
+\item Binäre Suche, Vergleich von \glqq abr\grqq mit $T{A[i],A[i]+2}$:\newline
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
+9 & \$\\
+8 & a\$\\
+1 & \color{red}\textbf{aba}\color{black}cabra\$\ \glqq abr\grqq $>$ \glqq \color{red}aba\color{black}\grqq \textrightarrow untere Hälfte\\ 
+5 & abra\$\\
+3 & acabra\$\\
+2 & \color{gray}bacabra\$\\
+6 & \color{gray}bra\$\\
+4 & \color{gray}cabra\$\\
+7 & \color{gray}ra\$\\
+\end{tabular}
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{itemize}
+\item Binäre Suche, Vergleich von \glqq abr\grqq mit $T{A[i],A[i]+2}$:\newline
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
+9 & \color{gray}\$\\
+8 & \color{gray}a\$\\
+1 & abacabra\$\\ 
+5 & \color{red}\textbf{abr}\color{black}a\$\ \glqq abr\grqq $==$ \glqq \color{red}abr\color{black}\grqq \textrightarrow Treffer!\\
+3 & acabra\$\\
+2 & \color{gray}bacabra\$\\
+6 & \color{gray}bra\$\\
+4 & \color{gray}cabra\$\\
+7 & \color{gray}ra\$\\
+\end{tabular}\newline
+\item Suche in $\mathcal{O}(m\cdot log (n))$, aber: Sind wir hier schon fertig?
+\item Gibt es weitere Vorkommen von p = \glqq abr\grqq in T?
+\end{itemize}
+\end{frame}
+%%%%%%%%	Ende erstes Bsp. Suche p="abr" in T%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{itemize}
+\item Diesmal Suche von \glqq ab\grqq
+\item Binäre Suche, Vergleich von \glqq ab\grqq mit $T{A[i],A[i]+1}$:\newline
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
+9 & \$\\
+8 & a\$\\
+1 & abacabra\$\\ 
+5 & abra\\
+3 & \color{red}\textbf{ac}\color{black}abra\$\ \glqq ab\grqq $<$ \glqq \color{red}ac\color{black}\grqq \textrightarrow obere Hälfte\\
+2 & bacabra\$\\
+6 & bra\$\\
+4 & cabra\$\\
+7 & ra\$\\
+\end{tabular}\newline
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Anwendung von Suffix Arrays}
+\begin{itemize}
+\item Binäre Suche, Vergleich von \glqq ab\grqq mit $T{A[i],A[i]+1}$:\newline
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
+9 & \$\\
+8 & a\$\\
+1 & \color{red}\textbf{ab}\color{black}acabra\$\ \glqq ab\grqq $==$ \glqq \color{red}ab\color{black}\grqq \textrightarrow Treffer!\\ 
+5 & \color{red}ab\color{black}ra\\
+3 & acabra\\
+2 & \color{gray}bacabra\$\\
+6 & \color{gray}bra\$\\
+4 & \color{gray}cabra\$\\
+7 & \color{gray}ra\$\\
+\end{tabular}\newline
+\item Treffer $T_{1,2}$ erkannt
+\item Auffinden aller k weiterer Treffer ($T_{5,6}$) im Such Intervall nur sequenziell möglich $\rightarrow \mathcal{O}(m\cdot k + m\cdot log(n))$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cluster Eigenschaft in Suffix Trees}
+\begin{itemize}
+\item Wie kann sequenzielle Suche effiezienter werden?
+\item Rückblick auf die Suffix Trees: \textit{Cluster Property}
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.2]{SuffixTree.jpg}
+\end{figure}
+\item Kind-Suffixes haben Pfad von der Wurzel als LCP
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cluster Eigenschaft und Longest Common Prefix}
+\begin{itemize}
+\item Such Intervall entpsricht Teilbaum
+\item Im Such Intervall \textit{kann} es also LCPs geben: \color{red}rosa\color{black}: ''ab", mit \color{purple}lila \color{black}:''a", mit \color{green}grün\color{black}: kein LCP
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.25]{SuffixTreeLCP.jpg}
+\end{figure}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Suffix Array und Longest Common Prefix}
+\begin{itemize}
+\item Sei S ein Such Intervall [O,U], $M = \lfloor \frac{O+U}{2}\rfloor$ = Treffer
+\item Wir definieren zwei LCPs: oben = $LCP(T_{A[O],n},T_{A[M],n})$ und unten = $LCP(T_{A[M],n},T_{A[U],n}))$
+\item Bei sequenzieller Suche nur Vergleich von $T_{A[i]+\vert oben\vert, A[i]+m}$ nötig
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bsp. $T = ''annanas\_Anna\$''$}
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
+13 & \$\\
+8 & \_Anna\$\\
+12 & a\$\\
+4 & anas\_Anna\$\\
+9 & Anna\$\\
+1 & annanas\_Anna\$\\
+6 & as\_Anna\$\\  %MMMMMMMMMMMM
+11 & na\$\\
+3 & nanas\_Anna\$\\
+5 & nasAnna\$\\
+10 & nna\$\\
+2 & nnanas\_Anna\$\\
+7 & s\_Anna\$\\
+\end{tabular}
+\end{frame}
+
 \begin{frame}
 \frametitle{Zusammenfassung: Binäre Suche in Suffix Arrays}
 \begin{itemize}
 \item Finden der n Suffixes in T: $\mathcal{O}(n)$
-\item Alphabetisch Sortieren des Suffix Arrays: $\mathcal{O}(n\cdot log (n))$
+\item Lexikografisches Sortieren des Suffix Arrays: $\mathcal{O}(n\cdot log (n))$
 \item Binäre Suche eines Patterns in T: $\mathcal{O}(log (n))$
 \item Insgesamt $\mathcal{O}(n \cdot log (n))$ (oder $m \cdot log (n)$?)
 \end{itemize}
