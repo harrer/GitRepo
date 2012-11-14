@@ -205,7 +205,7 @@ abacabra \newline
 \item Auffinden aller k weiterer Treffer ($T_{5,6}$) im Such Intervall nur sequenziell möglich $\rightarrow \mathcal{O}(m\cdot k + m\cdot log(n))$ 
 \end{itemize}
 \end{frame}
-
+%%%%%%%%%%%	Cluster Property
 \begin{frame}
 \frametitle{Cluster Eigenschaft in Suffix Trees}
 \begin{itemize}
@@ -240,25 +240,90 @@ abacabra \newline
 \item Bei sequenzieller Suche nur Vergleich von $T_{A[i]+\vert oben\vert, A[i]+m}$ nötig
 \end{itemize}
 \end{frame}
-
+%%%%%%%%5     Bsp. Anna_Annanas
 \begin{frame}
-\frametitle{Bsp. $T = ''annanas\_Anna\$''$}
+\frametitle{Bsp. p = ''anna'' in T = ''annanas\_anna\$''}
 \begin{tabular}{l|l<{\ttfamily}}
 \textbf{A[i]} & $T_{A[i],n}$\\\hline
 13 & \$\\
-8 & \_Anna\$\\
+8 & \_anna\$\\
 12 & a\$\\
-4 & anas\_Anna\$\\
-9 & Anna\$\\
-1 & annanas\_Anna\$\\
-6 & as\_Anna\$\\  %MMMMMMMMMMMM
+4 & anas\_anna\$\\
+9 & anna\$\\
+1 & annanas\_anna\$\\
+6 & \color{red}as\_a\_\color{black}nna\$ ''anna'' < \color{red}''as\_a\_''\color{black}$\rightarrow$ obere Hälfte\\%MMMMMMMMMMMM
 11 & na\$\\
-3 & nanas\_Anna\$\\
-5 & nasAnna\$\\
+3 & nanas\_anna\$\\
+5 & nasanna\$\\
 10 & nna\$\\
-2 & nnanas\_Anna\$\\
-7 & s\_Anna\$\\
+2 & nnanas\_anna\$\\
+7 & s\_anna\$\\
 \end{tabular}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bsp. p = ''anna'' in T = ''annanas\_anna\$''}
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
+13 & \$\\
+8 & \_anna\$\\
+12 & a\$\\
+4 & \color{red}anas\color{black}\_anna\$ ''anna'' > \color{red}''anas''\color{black}$\rightarrow$ untere Hälfte\\ %MMMMMMMMMM
+9 & anna\$\\
+1 & annanas\_anna\$\\
+6 & as\_anna\$ \\
+11 & \color{gray}na\$\\
+3 & \color{gray}nanas\_anna\$\\
+5 & \color{gray}nasanna\$\\
+10 & \color{gray}nna\$\\
+2 & \color{gray}nnanas\_anna\$\\
+7 & \color{gray}s\_anna\$\\
+\end{tabular}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bsp. p = ''anna'' in T = ''annanas\_anna\$''}
+\begin{tabular}{l|l<{\ttfamily}}
+\textbf{A[i]} & $T_{A[i],n}$\\\hline
+13 & \color{gray}\$\\
+8 & \color{gray}\_anna\$\\
+12 & \color{gray}a\$\\
+4 & anas\_anna\$ \\
+9 & anna\$ \\ %MMMMMMMMMM
+1 & \color{red}anna\color{black}nas\_anna\$ ''anna'' == \color{red}''anna''\color{black}$\rightarrow$ Treffer!\\
+6 & as\_anna\$ \\
+11 & \color{gray}na\$\\
+3 & \color{gray}nanas\_anna\$\\
+5 & \color{gray}nasanna\$\\
+10 & \color{gray}nna\$\\
+2 & \color{gray}nnanas\_anna\$\\
+7 & \color{gray}s\_anna\$\\
+\end{tabular}
+\begin{itemize}
+\item oben = LCP(''anna\$'', ''anas\_anna\$'') = ''an''
+\item unten = LCP(''anna\$'', ''as\_anna\$'') = ''a''
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sequenzielle Suche mit LCP}
+\begin{itemize}
+\item nach unten, normal: ''anna'' $\neq$ ''as\_a'', 4 Zeichenvergleiche
+\item nach unten, mit LCP: ''\color{gray}a\color{red}nna'' $\neq$ ''\color{gray}a\color{red}s\_a\color{black}'', 3 Zeichenvergleiche
+\item nach oben, normal: ''anna'' == ''anna'', 4 Zeichenvergleiche
+\item nach oben, mit LCP: ''\color{gray}an\color{red}na'' == ''\color{gray}an\color{red}na\color{black}'', 2 Zeichenvergleiche
+\item nach oben, normal: ''anna'' $\neq$ ''anas'', 4 Zeichenvergleiche
+\item nach oben, mit LCP: ''\color{gray}an\color{red}na'' $\neq$ ''\color{gray}an\color{red}as\color{black}'', 2 Zeichenvergleiche
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Zwischen-Resultat}
+\begin{itemize}
+\item Such Intervalle \textit{können} längste gemeinsame Präfixe besitzen
+\item Im schlechtesrn Fall kein LCP $\rightarrow$ keine Laufzeitverbesserung
+\item In der Praxis aber schneller als nur binäre Suche.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
