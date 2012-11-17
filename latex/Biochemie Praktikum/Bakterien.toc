@@ -1,0 +1,4 @@
+\select@language {ngerman}
+\contentsline {section}{\numberline {1}Einleitung}{2}
+\contentsline {section}{\numberline {2}Versuch 1: Bakterielles Wachstum}{2}
+\contentsline {section}{\numberline {3}Versuch 2: Transformation von Bakterien}{2}
