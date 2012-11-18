@@ -1,0 +1,2 @@
+#!/bin/sh
+pdf_presenter_console /home/tobias/Documents/GitHub/GitRepo/latex/ Proseminar/Präsentation/proseminar.pdf

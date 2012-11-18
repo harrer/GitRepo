@@ -20,7 +20,11 @@
  
 \begin{document}
 \maketitle
-\frame{\tableofcontents[currentsection]}
+%\frame{\tableofcontents[currentsection]}
+ 
+\begin{frame}
+\tableofcontents
+\end{frame} 
  
 \section{Suffix Arrays}
 %%%%%
@@ -54,7 +58,7 @@ T = \glqq abacabra\$\grqq\\[5mm]
 Das Suffix Array von T lautet: \newline
 {\ttfamily
 \qquad 1 2 3 4 5 6 7 8 9 \textrightarrow\ \textbf{i}\newline
-\qquad 9 8 1 5 3 2 6 4 7 \textrightarrow\ \textbf{S(i)}
+\qquad 9 8 1 5 3 2 6 4 7 \textrightarrow\ \textbf{A(i)}
 }
 \end{frame}
 %%%%
@@ -63,7 +67,7 @@ Das Suffix Array von T lautet: \newline
 \frametitle{Suffix Arrays aus Suffix Trees} %%Folientitel
 \begin{itemize}
 \item Sortierung durch z.B. mergeSort in $\mathcal{O}(n\cdot log (n))$
-\item Ein Suffix Array kann aus des Blättern eines Suffix Trees durch Tiefensuche hergeleitet werden: T = \glqq abacabra\$\grqq\newline
+\item Suffix Array kann aus Blättern eines Suffix Trees durch Tiefensuche hergeleitet werden: T = \glqq abacabra\$\grqq\newline
 \end{itemize}
 \includegraphics[scale=0.28]{SuffixTree.jpg}%[height=0.5\textheight]
 \end{frame}
@@ -211,11 +215,11 @@ abacabra \newline
 \begin{itemize}
 \item Wie kann sequenzielle Suche effiezienter werden?
 \item Rückblick auf die Suffix Trees: \textit{Cluster Property}
+\item Kind-Suffixes haben Pfad von der Wurzel als LCP
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.2]{SuffixTree.jpg}
+\includegraphics[scale=0.28]{SuffixTree.jpg}
 \end{figure}
-\item Kind-Suffixes haben Pfad von der Wurzel als LCP
 \end{itemize}
 \end{frame}
 
@@ -226,7 +230,7 @@ abacabra \newline
 \item Im Such Intervall \textit{kann} es also LCPs geben: \color{red}rosa\color{black}: ''ab", mit \color{purple}lila \color{black}:''a", mit \color{green}grün\color{black}: kein LCP
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.25]{SuffixTreeLCP.jpg}
+\includegraphics[scale=0.28]{SuffixTreeLCP.jpg}
 \end{figure}
 
 \end{itemize}
@@ -251,7 +255,7 @@ abacabra \newline
 4 & anas\_anna\$\\
 9 & anna\$\\
 1 & annanas\_anna\$\\
-6 & \color{red}as\_a\_\color{black}nna\$ ''anna'' < \color{red}''as\_a\_''\color{black}$\rightarrow$ obere Hälfte\\%MMMMMMMMMMMM
+6 & \color{red}as\_a\color{black}\_nna\$ ''anna'' < \color{red}''as\_a''\color{black}$\rightarrow$ obere Hälfte\\%MMMMMMMMMMMM
 11 & na\$\\
 3 & nanas\_anna\$\\
 5 & nasanna\$\\
@@ -325,17 +329,45 @@ abacabra \newline
 \item In der Praxis aber schneller als nur binäre Suche.
 \end{itemize}
 \end{frame}
+%%%%%%%%%%%%%% SA-Complex:
+\begin{frame}
+\frametitle{Weitere Verbesserungen durch LCPs}
+\begin{itemize}
+\item Vorausberechnung aller 2n-3 Suchintervalle [L,R] wobei L<R
+\item Berechnung des LCP für jedes dieser Intervalle
+\end{itemize}
+\includegraphics[scale=1]{intervalle.jpeg}
+\end{frame}
+
+\begin{frame}
+\frametitle{LCP-Array $\pi$}
+\begin{itemize}
+\item Für jedes Suchintervall [L,R] gibt es genau ein lcp($T_{A[R],n}$,$T_{A[L],n}$)
+\item Wird in LCP-Array $\pi$ abgespeichert, max. Dimension 3n-8
+\item $\pi$ ist Nebenprodukt bei Berechnung von Suffix Array A, falls Herleitung aus Suffix Tree
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{LCP Array $\pi$}
+Es seien $P_L = lcp(p,T_{A[L],n}$) und $P_{LM} = lcp(T_{A[M],n},T_{A[L],n}) = \pi[i]$, dann gibt es 3 Fälle:\newline
+\begin{enumerate}
+\item $P_{LM} > P_L$: Pattern p kann \textit{nicht} in [L,M] liegen ($\rightarrow$ Cluster Eigenschaft), wenn dann in [M,R]
+\item $P_{LM} < P_L$: p liegt wenn dann in [L,M], sicher \textit{nicht} in [M,R]
+\item $P_{LM} = P_L$: Vergleiche p mit $T_{A[M],A[M]+m}$ falls <0 $\rightarrow$ nach links, >0 $\rightarrow$ nach rechts, ==0 Treffer
+\end{enumerate}
+\end{frame}
 
 \begin{frame}
 \frametitle{Zusammenfassung: Binäre Suche in Suffix Arrays}
 \begin{itemize}
-\item Finden der n Suffixes in T: $\mathcal{O}(n)$
-\item Lexikografisches Sortieren des Suffix Arrays: $\mathcal{O}(n\cdot log (n))$
-\item Binäre Suche eines Patterns in T: $\mathcal{O}(log (n))$
-\item Insgesamt $\mathcal{O}(n \cdot log (n))$ (oder $m \cdot log (n)$?)
+\item Finden der n Suffixes in T: $\mathcal{O}(n)$ und lexikografisch Sortieren: $\mathcal{O}(n\cdot log (n))$
+\item Auch in $\mathcal{O}(n)$ möglich
+\item Binäre Suche mit LCP: $\mathcal{O}(m\cdot (k + log(n)))$
+\item Binäre Suche mit berechneten Suchintervallen und LCP-Array: $\mathcal{O}(m + k + log(n))$
 \end{itemize}
 \end{frame}
-%%%%%
+%%%%%  Backward Search
 \subsection{Backward Search}
 \begin{frame}
 \frametitle{Backward Search}
@@ -370,11 +402,16 @@ T = \glqq abacabra\$\grqq\\[5mm]
 \begin{itemize}
 \item Darunter alle \glqq a\grqq mit Vorgänger \glqq r\grqq\\[5mm]
 \begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} l<{\ttfamily}}
-i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
+\textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
+1 & 9 & a & \$ \\
 \textbf{2} & \textbf{8} & \color{red}\textbf{r} & \textbf{a\$} \\
 3 & 1 & \$ & abacabra\$ \\
 4 & 5 & c & abra\$ \\
 5 & 3 & b & acabra\$ \\
+6 & 2 & a & bacabra\$ \\
+7 & 6 & a & bra\$ \\
+8 & 4 & a & cabra\$ \\
+9 & 7 & b & ra\$ \\
 \end{tabular}\\[5mm]
 \item Weiter zu i = C[\glqq r\grqq]+1 = 9
 \end{itemize}
@@ -383,57 +420,76 @@ i & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq (Schritt 2)}
 \begin{itemize}
 \item Suche \glqq a\color{red}\textbf{b}\color{black}ra\grqq in r mit Vorgänger b
-\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} l<{\ttfamily}}
 \textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
-. & . & . & .\\
-5 & 3 & b & acabra\$ \\
-. & . & . & .\\
+1 & 9 & a & \$ \\
+2 & 8 & r & a\$ \\
+3 & 1 & \$ & abacabra\$ \\
+4 & 5 & c & abra\$ \\
+5 & 3 & \color{red}b \color{black}& acabra\$ \\
+6 & 2 & a & bacabra\$ \\
+7 & 6 & a & bra\$ \\
+8 & 4 & a & cabra\$ \\
 \textbf{9} & \textbf{7} & \color{red}\textbf{b} & \textbf{ra\$} \\
-\end{tabular}
+\end{tabular}\\[5mm]
 \item b ist bei i = 5 bereits \textit{einmal} in $T_{A[i]-1}$ vorgekommen \textrightarrow suche von C[\glqq b\grqq]+1\textit{+1} bis C[\glqq c\grqq], d.h. bei i = 7
+\item Problem: z.B. \textit{wie oft ist \glqq b\grqq  in Spalte $T_{A[i]-1}$ vor i = 5} erfordert lineares Durchsuchen von $T_{A[i]-1}\ \rightarrow\ \mathcal{O}(m\cdot n)$.
+\end{itemize}
+\end{frame}
+
+%%%%%%% Occ Funktion
+
+\begin{frame}
+\frametitle{Lösung: Funktion Occ(c,i)}
+\begin{itemize}
+\item Für alle c aus $\Sigma$ sei $B^{c}$ ein Bit-Vektor mit $B^{c}[i] = 1$ falls $T_{A[i]-1} = c$
+\item Eine weitere Funktion $rank_{b}(B,i)$ liefert die Anzahl von zB b=1 in B vor i, s.d $rank_{1}(B^{c},i) = Occ(c,i)$.
+\item Dies benötigt linear mehr Speicher, doch der Zugriff durch rank ist konstant, s.d. $\mathcal{O}(m)$ insgesamt garantiert ist.
 \end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq (Schritt 3)}
 \begin{itemize}
 \item Finde alle \glqq{\color{red}\textbf{a}}bra\grqq  in b mit Vorgänger \glqq a\grqq:\\[5mm]
-\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} l<{\ttfamily}}
 \textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
-1 & 9 & a & \$ \\
-. & . & . & .\\
-6 & 2 & a & bacabra\$ \\
+1 & 9 & \color{red}a \color{black}& \$ \\
+2 & 8 & r & a\$ \\
+3 & 1 & \$ & abacabra\$ \\
+4 & 5 & c & abra\$ \\
+5 & 3 & b & acabra\$ \\
+6 & 2 & \color{red}a & \color{black}bacabra\$ \\
 \textbf{7} & \textbf{6}  & \color{red}\textbf{a} & \textbf{bra\$} \\
+8 & 4 & a & cabra\$ \\
+9 & 7 & b & ra\$ \\
 \end{tabular}\\[5mm]
-\item Da bei i = 1 und 6 a bereits \textit{zweimal} in $T_{A[i]-1}$ vorkam \textrightarrow suche von C[\glqq a\grqq]+1\textit{+2} bis C[\glqq b\grqq], d.h. bei i = 4
+\item Occ(''a'', 7) = 2 \textrightarrow suche von C[\glqq a\grqq]+1\textit{+2} bis C[\glqq b\grqq], d.h. bei i = 4
 \end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{Bsp.: Suche von p = \glqq abra\grqq  (Schritt 4)}
-\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} l<{\ttfamily}}
 \textbf{i} & $A[i]$ & $T_{A[i]-1}$ & $T_{A[i],n}$\\\hline
+1 & 9 & a & \$ \\
+2 & 8 & r & a\$ \\
+3 & 1 & \$ & abacabra\$ \\
 4 & 5 & c & \color{red}\textbf{abra\$} \\
+5 & 3 & b & acabra\$ \\
+6 & 2 & a & bacabra\$ \\
+7 & 6 & a & bra\$ \\
+8 & 4 & a & cabra\$ \\
+9 & 7 & b & ra\$ \\
 \end{tabular}\\[5mm]
 \begin{itemize}
 \item Nach 4 Schritten (= Länge m von p) ist das Pattern gefunden $\rightarrow \mathcal{O}(m)$
-\item Problem: z.B. \textit{wie oft ist \glqq b\grqq  in Spalte $T_{A[i]-1}$ vor i = 5} erfordert lineares Durchsuchen von $T_{A[i]-1}\ \rightarrow\ \mathcal{O}(m\cdot n)$.
-\item Effizientes Vorgehen nötig, sonst Laufzeit wie bei naiver Suche!
 \end{itemize}
 \end{frame}
-\begin{frame}
-\frametitle{Lösung: Funktion Occ(c,i)}
-\begin{itemize}
-\item Die Spalte des Vorgänger-Buchstaben $T_{A[i]-1}$ nennen wir ab jetzt $L_{1,n}$
-\item Für alle c aus $\Sigma$ sei $B^{c}$ ein Bit-Vektor mit $B^{c}[i] = 1$ falls $L_{i} = c$
-\item Eine weitere Funktion $rank_{b}(B,i)$ liefert die Anzahl von zB b=1 in B vor i, s.d $rank_{1}(B^{c},i) = Occ(c,i)$.
-\item Dies benötigt linear mehr Speicher, doch der Zugriff durch rank ist konstant, s.d. $\mathcal{O}(m)$ insgesamt garantiert ist.
-\item Wavelet Trees?
-\end{itemize}
-\end{frame}
+%%%%%%%%%%%%%%%% Forward Searching
 \begin{frame}
 \subsection{Forward Searching}
 \frametitle{Forward Searching}
 \begin{itemize}
-\item Vorherige Position: $LF(i) = C[L_i] + Occ(L_i,i)$
+\item Vorherige Position: $LF(i) = C[T_{A[i]-1}] + Occ(T_{A[i]-1},i)$
 \item Während beim Backward Searching ein Suffix auf das vorhergehende abgebildet wird, ist es hier umgekehrt
 \item Inverse Funktion $\Psi(i) = i'$, s.d. A[i'] = (A[i] mod n)+1 bildet die Pos. eines Suffix auf die seines Nachfolgers ab
 \end{itemize}
@@ -459,9 +515,105 @@ i & $A[i]$ & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
 \item Falls $\forall c: c \in \Sigma \Rightarrow c \in T$ ex. $\sigma$ aufsteigende Zahlenfolgen in $\Psi$: 3; 1,6,7,8; 5,9; 4; 2;
 \item Diese zeigen an, wo sich der erste Buchstabe des Suffix ändert. Als Bitvektor newF = 110001011
 \item Die Suche von p erfolgt binär, wobei p ein Prefix des jew. Suffix ist, welches durch rekursives Folgen von $\Psi(i)$ \textit{ohne das Suffix Array} gefunden werden kann
-\item Der jew. erste Buchstabe $T_{A[i]}$ des Suffixes $T_{A[i],n}$ wird durch $rank(newF,i)$ ermittelt. Falls zB $rank(newF,i) = 2$ ist c = \glqq a\grqq.
+\item Der jew. erste Buchstabe $T_{A[i]}$ des Suffixes $T_{A[i],n}$ wird durch $rank_1(newF,i)$ ermittelt. Falls zB $rank_1(newF,i) = 2$ ist c = \glqq a\grqq.
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Bsp: p = ''aba'' in ''abacabra\$''}
+\begin{itemize}
+\item $rank_1(newF, 5) = 2 \rightarrow$ erster Buchstabe: ''a''
+\end{itemize}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+i & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
+1 & 3 & 1 &\$\\
+2 & 1 & 1 &a\$\\
+3 & 6 & 0 &abacabra\$\\
+4 & 7 & 0 &abra\$\\
+5 & 8 & 0 & ''\color{red}a\color{gray}ba\color{black}'' == \color{red}a\color{gray}cabra\$\\
+6 & 5 & 1 &bacabra\$\\
+7 & 9 & 0 &bra\$\\
+8 & 4 & 1 &cabra\$\\
+9 & 2 & 1 &ra\$\\
+\end{tabular}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bsp: p = ''aba'' in ''abacabra\$''}
+\begin{itemize}
+\item $rank_1(newF, \Psi(5)) = rank_1(newF, 8) = 4 \rightarrow$ nächster Buchstabe: ''c''
+\end{itemize}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+i & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
+1 & 3 & 1 &\$\\
+2 & 1 & 1 &a\$\\
+3 & 6 & 0 &abacabra\$\\
+4 & 7 & 0 &abra\$\\
+5 & 8 & 0 & ''\color{red}ab\color{gray}a\color{black}'' < \color{red}ac\color{gray}abra\$\\
+6 & 5 & 1 &bacabra\$\\
+7 & 9 & 0 &bra\$\\
+8 & 4 & 1 &cabra\$\\
+9 & 2 & 1 &ra\$\\
+\end{tabular}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bsp: p = ''aba'' in ''abacabra\$''}
+\begin{itemize}
+\item $rank_1(newF, 3) = 2 \rightarrow$ erster Buchstabe: ''a''
+\end{itemize}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+i & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
+1 & 3 & 1 &\$\\
+2 & 1 & 1 &a\$\\
+3 & 6 & 0 &''\color{red}a\color{gray}ba\color{black}'' == \color{red}a\color{gray}bacabra\$\\
+4 & 7 & 0 &abra\$\\
+5 & 8 & 0 & acabra\$\\
+\color{gray}6 & \color{gray}5 & \color{gray}1 &\color{gray}bacabra\$\\
+\color{gray}7 & \color{gray}9 & \color{gray}0 &\color{gray}bra\$\\
+\color{gray}8 &\color{gray} 4 & \color{gray}1 &\color{gray}cabra\$\\
+\color{gray}9 & \color{gray}2 & \color{gray}1 &\color{gray}ra\$\\
+\end{tabular}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bsp: p = ''aba'' in ''abacabra\$''}
+\begin{itemize}
+\item $rank_1(newF, \Psi(3)) = rank_1(newF, 6) = 3 \rightarrow$ nächster Buchstabe: ''b''
+\end{itemize}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+i & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
+1 & 3 & 1 &\$\\
+2 & 1 & 1 &a\$\\
+3 & 6 & 0 &''\color{red}ab\color{gray}a\color{black}'' == \color{red}ab\color{gray}acabra\$\\
+4 & 7 & 0 &abra\$\\
+5 & 8 & 0 & acabra\$\\
+\color{gray}6 & \color{gray}5 & \color{gray}1 &\color{gray}bacabra\$\\
+\color{gray}7 & \color{gray}9 & \color{gray}0 &\color{gray}bra\$\\
+\color{gray}8 &\color{gray} 4 & \color{gray}1 &\color{gray}cabra\$\\
+\color{gray}9 & \color{gray}2 & \color{gray}1 &\color{gray}ra\$\\
+\end{tabular}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bsp: p = ''aba'' in ''abacabra\$''}
+\begin{itemize}
+\item $rank_1(newF, \Psi(6)) = rank_1(newF, 5) = 2 \rightarrow$ nächster Buchstabe: ''a''
+\end{itemize}
+\begin{tabular}{l<{\ttfamily}|c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
+i & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
+1 & 3 & 1 &\$\\
+2 & 1 & 1 &a\$\\
+3 & 6 & 0 &''\color{red}aba\color{black}'' == \color{red}aba\color{gray}cabra\$\\
+4 & 7 & 0 &abra\$\\
+5 & 8 & 0 & acabra\$\\
+\color{gray}6 & \color{gray}5 & \color{gray}1 &\color{gray}bacabra\$\\
+\color{gray}7 & \color{gray}9 & \color{gray}0 &\color{gray}bra\$\\
+\color{gray}8 &\color{gray} 4 & \color{gray}1 &\color{gray}cabra\$\\
+\color{gray}9 & \color{gray}2 & \color{gray}1 &\color{gray}ra\$\\
+\end{tabular}
+\end{frame}
+
 \begin{frame}
 \frametitle{Fazit Forward Searching}
 \begin{itemize}
@@ -470,6 +622,15 @@ i & $A[i]$ & $\Psi$ & newF & $T_{A[i],n}$ \\\hline
 \item $\Psi$ kann durch \textit{gap-encoding} weiter komprimiert werden.
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Zusammenfassung Backward- und Forward Suche}
+\begin{itemize}
+\item \textbf{Backward Suche:} Zusätzliche Hilfsfunktion $LF(i) = C[T_{A[i]-1}] + Occ(T_{A[i]-1},i)$ nötig, mehr Speicherbederf, aber in $\mathcal{O}(k \cdot m)$ Zeit.
+\item \textbf{Forward Suche:} $\mathcal{O}(k \cdot m \cdot log(n))$ Zeit, aber $\Psi$ reicht aus, T, A nicht nötig $\rightarrow$ Self index
+\end{itemize}
+\end{frame}
+
 \section{Burrows-Wheeler Transformation}
 \begin{frame}
 \frametitle{Burrows-Wheeler Transformation}
@@ -483,7 +644,7 @@ Sei $T_{1,n}$ ein String und A[1,n] sein Suffix Array. Dann ist die BWT $T_{1,n}
 \begin{frame}
 \frametitle{Anschauliches Beispiel, T = \glqq abacabra\$\grqq}
 \begin{tabular}{l<{\ttfamily} c<{\ttfamily} r<{\ttfamily}}
-\textbf{Permutationen} & \textbf{alph. geordnet} & $F\ldots L = T^{bwt}$ \\\hline
+\textbf{Permutationen} & \textbf{lex. geordnet} & $F\ldots L = T^{bwt}$ \\\hline
 abacabra\$ & \$abacabra & \$...a \\
 bacabra\$a & a\$abacabr & a...r \\
 acabra\$ab & abacabra\$ & a...\$ \\
@@ -494,53 +655,38 @@ ra\$abacab & bra\$abaca & b...a \\
 a\$abacabr & cabra\$aba & c...a \\
 \$abacabra & ra\$abacab & r...b \\
 \end{tabular}\\[5mm]
+\end{frame}
+
+\begin{frame}
+\frametitle{Anschauliches Beispiel, T = \glqq abacabra\$\grqq}
+\begin{tabular}{l<{\ttfamily} |c<{\ttfamily} |cc<{\ttfamily}| r<{\ttfamily}}
+\textbf{Permutationen} & \textbf{Suffix Array} & A[i] & $F\ldots L = T^{bwt}$ \\\hline
+abacabra\$ & \$\color{gray}abacabra &9& \$...a \\
+bacabra\$\color{gray}a & a\$\color{gray}abacabr &8& a...r \\
+acabra\$\color{gray}ab & abacabra\$ & 1&a...\$ \\
+cabra\$\color{gray}aba & abra\$\color{gray}abac &5& a...c \\
+abra\$\color{gray}abac & acabra\$\color{gray}ab &3& a...b \\
+bra\$\color{gray}abaca & bacabra\$\color{gray}a & 2&b...a \\
+ra\$\color{gray}abacab & bra\$\color{gray}abaca &6& b...a \\
+a\$\color{gray}abacabr & cabra\$\color{gray}aba & 4&c...a \\
+\$\color{gray}abacabra & ra\$\color{gray}abacab &7& r...b \\
+\end{tabular}\\[5mm]
 \begin{itemize}
 \item $T^{bwt}$ = ar\$cbaaab
 \item BWT Permutation besser für weitere Komprimierung von T als T selbst
 \end{itemize}
 \end{frame}
-\begin{frame}
-\frametitle{BWT Rücktransformation}
-\begin{itemize}
-\item Da $L_i$ $F_i$ voransteht, kann T aus $T^{bwt}$ wie folgt wiederhergestellt werden:
-\end{itemize}
-\begin{tabular}{l<{\ttfamily} c<{\ttfamily} c<{\ttfamily}c<{\ttfamily} r<{\ttfamily}}
-F...L & nach links &sortiert& L links angehängt\\\hline
-\$...a &...a\$ &...\$a&...a\$a\\
-a...r &...ra &...a\$&...ra\$\\
-a...\$ &...\$a &...ab&...\$ab\\
-a...c &...ca &...ab&...cab\\
-a...b &...ba &...ac&...bac\\
-b...a &...ab &...ba&...aba\\
-b...a &...ab &...br&...abr\\
-c...a &...ac &...ca&...aca\\
-r...b &...br &...ra&...bra\\
-\end{tabular}
-\begin{itemize}
-\item Reihe L = $T^{bwt}$ bekannt, F wird aus L alph. sortiert
-\item Verschieben \glqq nach links\grqq, sortieren
-\item L = $T^{bwt}$ links \glqq anhängen, sortieren...
-\end{itemize}
-\end{frame}
-\begin{frame}
-\frametitle{BWT Rücktransformation}
-Nach n Durchgängen ist die Matrix wiederhergestellt:\\[5mm]
-\begin{tabular}{l<{\ttfamily}}
-\$abacabra \\
-a\$abacabr \\
-\color{red}\textit{abacabra}\$ \\
-abra\$abac \\
-acabra\$ab \\
-bacabra\$a \\
-bra\$abaca \\
-cabra\$aba \\
-ra\$abacab \\
-\end{tabular}\\[5mm]
-T ist derjenige String, der mit \glqq\$\grqq endet.
-\end{frame}
+
 % Zusammenfassung
 \begin{frame}
- \frametitle{Zusammenfassung}
+\frametitle{Zusammenfassung und Fragen}
+\begin{itemize}
+\item Suffix Arrays und Zusammenhang mit Suffix Trees
+\item Binäre Suche mit LCP
+\item Backward- und Forward Suche
+\item Suffix Arrays in der BWT
+\end{itemize}
+\textbf{Vielen Dank für Eure Aufmerksamkeit!}
 \end{frame}
 
 \end{document}
