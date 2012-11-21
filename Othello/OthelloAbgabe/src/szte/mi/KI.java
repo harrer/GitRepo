@@ -13,13 +13,13 @@ public class KI {
 		this.board = board;
 	}
 
-	public Entry[][] möglicheZüge(){
+	public Entry[][] möglicheZüge(int farbe){
 		Entry[][] checkBoard = new Entry[Board.size][Board.size];
 		for (int i = 0; i < checkBoard.length; i++) {
 			for (int j = 0; j < checkBoard.length; j++) {
 				ArrayList<Move> list = new ArrayList<Move>();
 				if(board.getBoard()[i][j]==0){
-					list = board.korrekterZug(new Move(j, i), 2);
+					list = board.korrekterZug(new Move(j, i), farbe);
 				}
 				checkBoard[i][j] = new Entry(list);
 			}
@@ -27,7 +27,7 @@ public class KI {
 		return checkBoard;
 	}
 	
-	public Move findeBestenZug(Entry[][] züge){
+	public Move findeBestenZug(Entry[][] züge, int farbe){
 		int count = 0, max=0;
 		Move result = null;
 		for (int i = 0; i < züge.length; i++) {
@@ -35,7 +35,7 @@ public class KI {
 				if(züge[i][j].getList().size()>0){
 					for (int j2 = 0; j2 < züge[i][j].getList().size(); j2++) {
 						Move next = new Move(züge[i][j].getList().get(j2).x+j, züge[i][j].getList().get(j2).y+i);
-						while(!(next.x<0||next.y<0||next.x>=Board.size||next.y>=Board.size)&&board.getBoard()[next.y][next.x]!=computer){
+						while(!(next.x<0||next.y<0||next.x>=Board.size||next.y>=Board.size)&&board.getBoard()[next.y][next.x]!=farbe){
 							count++;
 							next = new Move(next.x+züge[i][j].getList().get(j2).x, next.y+züge[i][j].getList().get(j2).y);
 						}

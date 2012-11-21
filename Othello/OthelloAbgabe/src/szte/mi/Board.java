@@ -163,19 +163,35 @@ public class Board implements Player{
 			player1 = false;
 			player = 2;
 		}
+		System.out.println(order);
 		maxTime = t;
 		random = rnd;
 	}
 
 	@Override
 	public Move nextMove(Move prevMove, long tOpponent, long t) {
-		if(prevMove!=null){
+		Move move = null;
+		if(player==2){
+			if(prevMove!=null){
 			setze(prevMove, 1);
+			}
+			move = ki.findeBestenZug(ki.möglicheZüge(2),2);
+			if(move!=null){
+				setze(move, 2);
+				//System.out.println(move.x+", "+move.y);
+			}
 		}
-		Move move = ki.findeBestenZug(ki.möglicheZüge());
-		setze(move, 2);
-		//System.out.println(move.x+", "+move.y);
-		return move;//return move;
+		else if(player==1){
+			if(prevMove!=null){
+				setze(prevMove, 2);
+				}
+				move = ki.findeBestenZug(ki.möglicheZüge(1),1);
+				if(move!=null){
+					setze(move, 1);
+					//System.out.println(move.x+", "+move.y);
+				}
+		}
+		return move;
 	}
 	
 	public int[][] getBoard() {return board;}
