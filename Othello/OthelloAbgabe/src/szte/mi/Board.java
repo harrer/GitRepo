@@ -8,7 +8,7 @@ public class Board implements Player{
 
 	public static final int size = 8;
 	private int[][] board;//[y/vert][x/horizontal] 0==leer 1==schwarz 2==weiß
-	private KI ki;
+	private KIGreedy ki;
 	private boolean player1;//schwarz==true
 	private int player = -1;
 	private long maxTime;
@@ -17,7 +17,7 @@ public class Board implements Player{
 	public Board(){
 		board = new int[size][size];
 		board[3][3] = 2; board[3][4] = 1; board[4][3] = 1; board[4][4] = 2;
-		ki = new KI(this);
+		ki = new KIGreedy(this);
 	}
 	
 	public boolean setze(Move move, int player){
